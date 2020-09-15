@@ -26,4 +26,4 @@ fracreg probit widmp_ricecap weekends_both Morning Kolkata ///
 margins, dyex(_all)
 
 
-****
+* testing 123
