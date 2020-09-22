@@ -88,7 +88,7 @@ label variable kcal_fat5 "Dinner-kcal share for fat"
 
 drop share_carb1- share_fat5 hhsize 
 
-/*checking the sum if euqal to 1.0 to secure smooth run of fmlogit*/
+/*checking the sum if equal to 1.0 to secure smooth run of fmlogit*/
 
 gen bfastkcal   =kcal_carb1+kcal_pro1+kcal_fat1
 gen amsnackkcal =kcal_carb2+kcal_pro2+kcal_fat2
@@ -179,13 +179,14 @@ replace   kcal_pro5   =kcal_pro5+0.0001 if dum_dinnerkcal==1
 replace   kcal_pro5   =kcal_pro5-0.0001 if dum_dinnerkcal==2
 replace   dinnerkcal  =kcal_carb5+kcal_pro5+kcal_fat5
 summarize dinnerkcal
-
+ **************************
+ 
 summarize bfastkcal amsnackkcal lunchkcal pmsnackkcal dinnerkcal
 drop dum_amsnackkcal dum_lunchkcal dum_pmsnackkcal dum_dinnerkcal
 
 
 merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta"
-drop _merge
+
 
 save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\15analysis_kcalshares.dta", replace
 
