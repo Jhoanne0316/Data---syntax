@@ -67,19 +67,53 @@ replace s5_dinner   =round(energytotal5/kcal,0.0001)
 
 gen       s0_kcal=s1_bfast+s2_amsnacks+s3_lunch+s4_pmsnacks+s5_dinner
 edit      s1_bfast s2_amsnacks s3_lunch s4_pmsnacks s5_dinner s0_kcal
-gen       dum_s0_kcal=0 if s0_kcal==1 & s0_kcal!=.
+gen       dum_s0_kcal=3 if s0_kcal>1.0001 &  s0_kcal!=. /*subtract 0.0002 */
+replace   dum_s0_kcal=2 if s0_kcal>1  & s0_kcal<1.0002 &  s0_kcal!=. /*subtract 0.0001 */
 replace   dum_s0_kcal=1 if s0_kcal<1  & s0_kcal!=. /*add 0.0001*/
-replace   dum_s0_kcal=2 if s0_kcal==1.0001  /*subtract 0.0001 */
-replace   dum_s0_kcal=3 if s0_kcal==1.0002 /*subtract 0.0002 */
+replace   dum_s0_kcal=0 if s0_kcal==1 &  s0_kcal!=. 
 tab       dum_s0_kcal
 
-sort  s0_kcal
-replace   s5_dinner   =s5_dinner+0.0001 if dum_s0_kcal==1
-replace   s5_dinner   =s5_dinner-0.0001 if s0_kcal==1.0002
-replace   s5_dinner   =s5_dinner-0.0001 if dum_s0_kcal==2
 
-replace   s0_kcal     =s1_bfast+s2_amsnacks+s3_lunch+s4_pmsnacks+s5_dinner
-summarize bfastkcal
+replace   s5_dinner  = s5_dinner-0.0002 if dum_s0_kcal==3
+replace   s5_dinner  = s5_dinner-0.0001 if dum_s0_kcal==2
+replace   s5_dinner  = s5_dinner+0.0001 if dum_s0_kcal==1
+replace   s0_kcal    = s1_bfast+s2_amsnacks+s3_lunch+s4_pmsnacks+s5_dinner
+summarize s0_kcal
+
+
+ **************************
+drop energytotal1 energytotal2 energytotal3 energytotal4 energytotal5 kcal  s0_kcal dum_s0_kcal
+
+label variable s1_bfast    "kcal share for Breakfast"
+label variable s2_amsnacks "kcal share for AM Snacks"
+label variable s3_lunch    "kcal share for Lunch"
+label variable s4_pmsnacks "kcal share for PM Snacks"
+label variable s5_dinner   "kcal share for Dinner"
+
+merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta"
+drop _merge
+
+
+twoway kdensity s1_bfast if round ==1 || kdensity s1_bfast if round ==2 ||kdensity s1_bfast if round ==3, ///
+                legend(order(1 "husband" 2 "wife" 3 "consensus"))
+
+twoway kdensity s2_amsnacks if round ==1 || kdensity s2_amsnacks if round ==2 ||kdensity s2_amsnacks if round ==3, ///
+                legend(order(1 "husband" 2 "wife" 3 "consensus"))
+				
+twoway kdensity s3_lunch if round ==1 || kdensity s3_lunch if round ==2 ||kdensity s3_lunch if round ==3, ///
+                legend(order(1 "husband" 2 "wife" 3 "consensus"))
+
+twoway kdensity s4_pmsnacks if round ==1 || kdensity s4_pmsnacks if round ==2 ||kdensity s4_pmsnacks if round ==3, ///
+                legend(order(1 "husband" 2 "wife" 3 "consensus"))
+
+twoway kdensity s5_dinner if round ==1 || kdensity s5_dinner if round ==2 ||kdensity s5_dinner if round ==3, ///
+                legend(order(1 "husband" 2 "wife" 3 "consensus"))
+				
+twoway kdensity s1_bfast || kdensity s2_amsnacks || kdensity s3_lunch || kdensity s4_pmsnacks || kdensity s5_dinner, ///
+                legend(order(1 "Breakfast" 2 "AM Snacks" 3 "Lunch" 4 "PM Snacks" 5 "Dinner"))
+
+				
+save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\16analysis_kcalocc.dta", replace
 
 
    

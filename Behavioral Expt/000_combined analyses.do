@@ -20,6 +20,10 @@ drop _merge
 merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\14b_analysis_ricecap.dta"
 drop _merge
 
+merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\16analysis_kcalocc.dta"
+drop _merge
+
+
 
 save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000_econ_models.dta", replace
 
@@ -115,12 +119,28 @@ eststo drop caldist
 
 *************
 
-* allocated for Calorie distribution among occasionsCalorie distribution among occasions
+* allocated for Calorie distribution among occasions
+fmlogit s5_dinner s1_bfast s2_amsnacks s3_lunch s4_pmsnacks , ///
+	    eta(weekends_both Morning Kolkata ///
+        BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
+	    highschool_h highschool_w agriocc_h employed_w ///
+	    inv_allw  ref incpercap000  ///
+	    source_hlabel source_wlabel hhsize wchild wseniors) cluster(iresid)
+	 
+eststo kcalocc
+
+
+foreach o in  s1_bfast s2_amsnacks s3_lunch s4_pmsnacks s5_dinner {
+margins, dydx(*) predict(outcome(`o')) post
+eststo, title(`o')
+estimates restore kcalocc
+}
+eststo drop kcalocc
 
 *************
 
 
 /*esttab caldist calcap diet using C:\Users\jynion\Desktop\DFC_v1.rtf , title (Econometric results of the nudging experiment) mtitles ("Parameter estimate") label star(* 0.10 ** 0.05 *** 0.01) b(4) se(4) pr2(4) onecell nogaps unstack*/
-esttab using C:\Users\jynion\Desktop\DFC_results.rtf, mtitles title(Econometric results of the nudging experiment)label star(* 0.10 ** 0.05 *** 0.01) b(4) se(4) pr2(4) onecell nogaps
+esttab using C:\Users\jynion\Desktop\DFC_results_09222020.rtf, mtitles title(Econometric results of the nudging experiment)label star(* 0.10 ** 0.05 *** 0.01) b(4) se(4) pr2(4) onecell nogaps
 
 
