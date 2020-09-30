@@ -10,7 +10,7 @@ keep    uniqueID session hh round day dish amtspentperdish hhsize
 
 sort    uniqueID day dish
 
-edit uniqueID session hh round day dish amtspentperdish
+edit 
 
 collapse (sum) amtspentperdish (mean) hhsize round, by (uniqueID day dish)
 collapse (mean) amtspentperdish hhsize round, by (uniqueID dish)
@@ -177,8 +177,11 @@ replace dish_code=157 if dish=="Vetki fish curry with cauliflower"
 replace dish_code=158 if dish=="Yoghurt"
 
 drop dish
-
+* restructuring the data converting the dish spent to variable
 reshape wide amtspentperdish, i(uniqueID) j (dish_code)
+
+
+**adding uniqueID for each hh using iresid var
 merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000_econ_models.dta"
 
 keep uniqueID- amtspentperdish158 hhsize round session hh
@@ -190,6 +193,10 @@ replace round=101 if round==1
 replace round=102 if round==2
 replace round=103 if round==3
 
+
+
+
+*restructuring the data to household level
 reshape wide amtspentperdish1- amtspentperdish158, i(iresid) j (round)
 
 
@@ -465,17 +472,17 @@ gen double wdis_158  =  (amtspentperdish158102-amtspentperdish1103)^2
 
 drop amtspentperdish1101- amtspentperdish158103
 
-
+*reshaping to long format to easily compute the  Euclidean distances per household
 reshape long hdis_ wdis_, i(iresid) j (dish)
 
-**computing the sum distances
-collapse (sum)hdis_ wdis_ , by (iresid)
+    **computing the sum distances
+      collapse (sum)hdis_ wdis_ , by (iresid)
 
 
-**computing Euclidean distance
+    **computing Euclidean distance
 
-gen double hed=round(sqrt(hdis_),0.0001)
-gen double wed=round(sqrt(wdis_),0.0001)
+    gen double hed=round(sqrt(hdis_),0.0001)
+    gen double wed=round(sqrt(wdis_),0.0001)
 
 
 ** computing intrahousehold decision making power using the amount spent on dish
@@ -498,3 +505,19 @@ label variable widmp_dishspent "Women’s intrahousehold decision making power u
 
 summarize
 twoway kdensity midmp_dishspent || kdensity widmp_dishspent
+
+
+
+**adding uniqueID for each hh using iresid var
+merge 1:1 iresid using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000_ihdmp_models.dta"
+keep widmp_dishspent midmp_dishspent ///
+		weekends_both Morning Kolkata ///
+        BCC1 BCC2 BCC3 PBC_00 hunger_h hunger_w husband0 wife0 ///
+	    highschool_h highschool_w agriocc_h employed_w ///
+	    inv_allw  ref incpercap000  ///
+	    source_hlabel source_wlabel hhsize wchild wseniors iresid
+		
+gen double hunger=round(hunger_h/hunger_w,0.0001)
+		
+save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\17analysis_ihdmpdishspent.dta", replace
+****
