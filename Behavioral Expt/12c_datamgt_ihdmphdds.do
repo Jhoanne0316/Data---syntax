@@ -19,7 +19,7 @@ by iresid: generate dup = cond(_N==1,0,_n)
 drop if dup>1
 keep iresid HDDS1 HDDS2 HDDS3  ///
      weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger_h hunger_w hunger hunger_sr ///
+     BCC1 BCC2 BCC3 T1 T2 T3 PBC_00 hunger_h hunger_w hunger hunger_sr ///
 	 highschool_h highschool_w agriocc_h employed_w ///
 	 inv_allw  ref incpercap000  ///
 	 source_hlabel source_wlabel hhsize wchild wseniors
