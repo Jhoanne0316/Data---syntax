@@ -426,6 +426,7 @@ save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data
 clear all
 use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta"
 
+*dummy variable whther respondents experience hunger
 gen hungry_h=1 if hunger_h<=-20
 replace hungry_h=0 if hungry_h==.
 tab hungry_h
@@ -434,16 +435,19 @@ gen hungry_w=1 if hunger_w<=-20
 replace hungry_w=0 if hungry_w==.
 tab hungry_w
 
-gen ave_hunger=(hunger_h+hunger_w)/2
-
+*adjusting the hunger level
 replace hunger_h=hunger_h+110
 replace hunger_w=hunger_w+110
 
-gen hunger=hunger_h/hunger_w
+*hunger level for the joint round
+gen double hunger_ave=round((hunger_h+hunger_w)/2,0.0001)
+
+*hunger ratio is used for IDMP using the adjusted hunger level
+gen double hunger_ratio=round(hunger_h/hunger_w,0.0001)
 
 
-collin hungry_h hungry_w hunger_h hunger_w ave_hunger, corr
-collin hungry_h hungry_w ave_hunger, corr 
+collin hungry_h hungry_w hunger_h hunger_w hunger_ave hunger_ratio, corr
+collin hungry_h hungry_w hunger_ave hunger_ratio, corr 
 
 /*r=0.7867, VIF(hungry_h =3.81, hungry_w = 4.23) */ 
 /*assessment: high VIF, recommendation: do not include in the model*/
@@ -1438,8 +1442,10 @@ label variable wseniors "Household with seniors"
 
 label variable hungry_h "Husband experiences hunger"
 label variable hungry_w "Wife experiences hunger"
-label variable ave_hunger "Average self-reported hunger of both"
-label variable hunger "hunger ratio"
+label variable hunger_ave "Average self-reported hunger of both"
+label variable hunger_ratio "hunger ratio"
+
+
 
 label variable youngadult_h "Husband is a young adult aged 18-35 y/o"
 label variable youngadult_w "Wife is a young adult aged 18-35 y/o"
@@ -1552,11 +1558,11 @@ clear all
 use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta"
 merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\00uniqueID.dta"
 
-keep uniqueID round rnd hunger_h hunger_w  ave_hunger
+keep uniqueID round rnd hunger_h hunger_w  hunger_ave
 
 rename hunger_h hunger1
 rename hunger_w hunger2
-rename ave_hunger hunger3
+rename hunger_ave hunger3
 
 
 reshape long hunger, i(uniqueID) j(rnd2)
@@ -1565,12 +1571,12 @@ destring rnd, replace
 drop if rnd2!=rnd
 
 drop rnd2 rnd round
-rename hunger hunger_sr
+rename hunger hunger_ind
 
 merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta"
 drop _merge
 
-label variable hunger_sr "Self-reported hunger"
+label variable hunger_sr "individualized hunger levels"
 
 save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta", replace
 
