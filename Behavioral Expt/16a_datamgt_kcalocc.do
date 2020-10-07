@@ -2,7 +2,7 @@
 
 clear all
 
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_mergefile.dta", clear
+use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_mergefiledta", clear
 
 /************** DATA MANAGEMENT FOR INDEPENDENT VARIABLES******************/
 
