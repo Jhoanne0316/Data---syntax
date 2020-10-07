@@ -10,6 +10,8 @@ sort round
 by round: summarize s1_bfast s2_amsnacks s3_lunch s4_pmsnacks s5_dinner
 
 
+
+
 fmlogit s5_dinner s1_bfast s2_amsnacks s3_lunch s4_pmsnacks , ///
 	    eta(weekends_both Morning Kolkata ///
         BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
