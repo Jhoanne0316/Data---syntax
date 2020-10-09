@@ -12,10 +12,13 @@ sort    uniqueID day dish
 
 edit 
 
+*computing the total amount spent for a unique dish in one day
 collapse (sum) amtspentperdish (mean) hhsize round, by (uniqueID day dish)
+
+*computing the average amount spent for a unique dish for two days
 collapse (mean) amtspentperdish hhsize round, by (uniqueID dish)
 
-
+*recoding in preparation for resharping the data frrom long format to wide format where each dish is a variable
 gen     dish_code=.
 replace dish_code=1 if dish=="Aloo barbati fry"
 replace dish_code=2 if dish=="Aloo bhaja"
@@ -177,9 +180,9 @@ replace dish_code=157 if dish=="Vetki fish curry with cauliflower"
 replace dish_code=158 if dish=="Yoghurt"
 
 drop dish
+
 * restructuring the data converting the dish spent to variable
 reshape wide amtspentperdish, i(uniqueID) j (dish_code)
-
 
 **adding uniqueID for each hh using iresid var
 merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000_econ_models.dta"
@@ -189,286 +192,284 @@ keep uniqueID- amtspentperdish158 hhsize round session hh
 merge 1:1 session hh round using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\dfc_iresid.dta"
 drop _merge uniqueID hhsize session hh
 
+*replacing the value of the variable round in preparation for reshaping the data creating dish variable for each round
 replace round=101 if round==1
 replace round=102 if round==2
 replace round=103 if round==3
 
 
-
-
 *restructuring the data to household level
 reshape wide amtspentperdish1- amtspentperdish158, i(iresid) j (round)
 
-
+*replaceing zero values to those dish variable with no amount spent
 foreach v of varlist amtspentperdish1101-amtspentperdish158103 {
     replace `v' =0 if `v'==.
   }
 
 **computing distance for husband
 gen double hdis_1  =  (amtspentperdish1101-amtspentperdish1103)^2
-gen double hdis_2  =  (amtspentperdish2101-amtspentperdish1103)^2
-gen double hdis_3  =  (amtspentperdish3101-amtspentperdish1103)^2
-gen double hdis_4  =  (amtspentperdish4101-amtspentperdish1103)^2
-gen double hdis_5  =  (amtspentperdish5101-amtspentperdish1103)^2
-gen double hdis_6  =  (amtspentperdish6101-amtspentperdish1103)^2
-gen double hdis_7  =  (amtspentperdish7101-amtspentperdish1103)^2
-gen double hdis_8  =  (amtspentperdish8101-amtspentperdish1103)^2
-gen double hdis_9  =  (amtspentperdish9101-amtspentperdish1103)^2
-gen double hdis_10  =  (amtspentperdish10101-amtspentperdish1103)^2
-gen double hdis_12  =  (amtspentperdish12101-amtspentperdish1103)^2
-gen double hdis_13  =  (amtspentperdish13101-amtspentperdish1103)^2
-gen double hdis_14  =  (amtspentperdish14101-amtspentperdish1103)^2
-gen double hdis_15  =  (amtspentperdish15101-amtspentperdish1103)^2
-gen double hdis_16  =  (amtspentperdish16101-amtspentperdish1103)^2
-gen double hdis_17  =  (amtspentperdish17101-amtspentperdish1103)^2
-gen double hdis_18  =  (amtspentperdish18101-amtspentperdish1103)^2
-gen double hdis_19  =  (amtspentperdish19101-amtspentperdish1103)^2
-gen double hdis_20  =  (amtspentperdish20101-amtspentperdish1103)^2
-gen double hdis_21  =  (amtspentperdish21101-amtspentperdish1103)^2
-gen double hdis_22  =  (amtspentperdish22101-amtspentperdish1103)^2
-gen double hdis_23  =  (amtspentperdish23101-amtspentperdish1103)^2
-gen double hdis_24  =  (amtspentperdish24101-amtspentperdish1103)^2
-gen double hdis_26  =  (amtspentperdish26101-amtspentperdish1103)^2
-gen double hdis_27  =  (amtspentperdish27101-amtspentperdish1103)^2
-gen double hdis_28  =  (amtspentperdish28101-amtspentperdish1103)^2
-gen double hdis_29  =  (amtspentperdish29101-amtspentperdish1103)^2
-gen double hdis_30  =  (amtspentperdish30101-amtspentperdish1103)^2
-gen double hdis_31  =  (amtspentperdish31101-amtspentperdish1103)^2
-gen double hdis_32  =  (amtspentperdish32101-amtspentperdish1103)^2
-gen double hdis_33  =  (amtspentperdish33101-amtspentperdish1103)^2
-gen double hdis_34  =  (amtspentperdish34101-amtspentperdish1103)^2
-gen double hdis_35  =  (amtspentperdish35101-amtspentperdish1103)^2
-gen double hdis_37  =  (amtspentperdish37101-amtspentperdish1103)^2
-gen double hdis_39  =  (amtspentperdish39101-amtspentperdish1103)^2
-gen double hdis_40  =  (amtspentperdish40101-amtspentperdish1103)^2
-gen double hdis_43  =  (amtspentperdish43101-amtspentperdish1103)^2
-gen double hdis_44  =  (amtspentperdish44101-amtspentperdish1103)^2
-gen double hdis_46  =  (amtspentperdish46101-amtspentperdish1103)^2
-gen double hdis_47  =  (amtspentperdish47101-amtspentperdish1103)^2
-gen double hdis_48  =  (amtspentperdish48101-amtspentperdish1103)^2
-gen double hdis_51  =  (amtspentperdish51101-amtspentperdish1103)^2
-gen double hdis_53  =  (amtspentperdish53101-amtspentperdish1103)^2
-gen double hdis_54  =  (amtspentperdish54101-amtspentperdish1103)^2
-gen double hdis_55  =  (amtspentperdish55101-amtspentperdish1103)^2
-gen double hdis_56  =  (amtspentperdish56101-amtspentperdish1103)^2
-gen double hdis_57  =  (amtspentperdish57101-amtspentperdish1103)^2
-gen double hdis_58  =  (amtspentperdish58101-amtspentperdish1103)^2
-gen double hdis_59  =  (amtspentperdish59101-amtspentperdish1103)^2
-gen double hdis_60  =  (amtspentperdish60101-amtspentperdish1103)^2
-gen double hdis_63  =  (amtspentperdish63101-amtspentperdish1103)^2
-gen double hdis_64  =  (amtspentperdish64101-amtspentperdish1103)^2
-gen double hdis_65  =  (amtspentperdish65101-amtspentperdish1103)^2
-gen double hdis_66  =  (amtspentperdish66101-amtspentperdish1103)^2
-gen double hdis_67  =  (amtspentperdish67101-amtspentperdish1103)^2
-gen double hdis_68  =  (amtspentperdish68101-amtspentperdish1103)^2
-gen double hdis_69  =  (amtspentperdish69101-amtspentperdish1103)^2
-gen double hdis_70  =  (amtspentperdish70101-amtspentperdish1103)^2
-gen double hdis_71  =  (amtspentperdish71101-amtspentperdish1103)^2
-gen double hdis_72  =  (amtspentperdish72101-amtspentperdish1103)^2
-gen double hdis_73  =  (amtspentperdish73101-amtspentperdish1103)^2
-gen double hdis_74  =  (amtspentperdish74101-amtspentperdish1103)^2
-gen double hdis_75  =  (amtspentperdish75101-amtspentperdish1103)^2
-gen double hdis_77  =  (amtspentperdish77101-amtspentperdish1103)^2
-gen double hdis_78  =  (amtspentperdish78101-amtspentperdish1103)^2
-gen double hdis_80  =  (amtspentperdish80101-amtspentperdish1103)^2
-gen double hdis_81  =  (amtspentperdish81101-amtspentperdish1103)^2
-gen double hdis_83  =  (amtspentperdish83101-amtspentperdish1103)^2
-gen double hdis_84  =  (amtspentperdish84101-amtspentperdish1103)^2
-gen double hdis_85  =  (amtspentperdish85101-amtspentperdish1103)^2
-gen double hdis_87  =  (amtspentperdish87101-amtspentperdish1103)^2
-gen double hdis_88  =  (amtspentperdish88101-amtspentperdish1103)^2
-gen double hdis_89  =  (amtspentperdish89101-amtspentperdish1103)^2
-gen double hdis_90  =  (amtspentperdish90101-amtspentperdish1103)^2
-gen double hdis_91  =  (amtspentperdish91101-amtspentperdish1103)^2
-gen double hdis_92  =  (amtspentperdish92101-amtspentperdish1103)^2
-gen double hdis_93  =  (amtspentperdish93101-amtspentperdish1103)^2
-gen double hdis_94  =  (amtspentperdish94101-amtspentperdish1103)^2
-gen double hdis_95  =  (amtspentperdish95101-amtspentperdish1103)^2
-gen double hdis_96  =  (amtspentperdish96101-amtspentperdish1103)^2
-gen double hdis_97  =  (amtspentperdish97101-amtspentperdish1103)^2
-gen double hdis_99  =  (amtspentperdish99101-amtspentperdish1103)^2
-gen double hdis_101  =  (amtspentperdish101101-amtspentperdish1103)^2
-gen double hdis_102  =  (amtspentperdish102101-amtspentperdish1103)^2
-gen double hdis_103  =  (amtspentperdish103101-amtspentperdish1103)^2
-gen double hdis_104  =  (amtspentperdish104101-amtspentperdish1103)^2
-gen double hdis_105  =  (amtspentperdish105101-amtspentperdish1103)^2
-gen double hdis_106  =  (amtspentperdish106101-amtspentperdish1103)^2
-gen double hdis_107  =  (amtspentperdish107101-amtspentperdish1103)^2
-gen double hdis_108  =  (amtspentperdish108101-amtspentperdish1103)^2
-gen double hdis_110  =  (amtspentperdish110101-amtspentperdish1103)^2
-gen double hdis_111  =  (amtspentperdish111101-amtspentperdish1103)^2
-gen double hdis_112  =  (amtspentperdish112101-amtspentperdish1103)^2
-gen double hdis_113  =  (amtspentperdish113101-amtspentperdish1103)^2
-gen double hdis_114  =  (amtspentperdish114101-amtspentperdish1103)^2
-gen double hdis_115  =  (amtspentperdish115101-amtspentperdish1103)^2
-gen double hdis_116  =  (amtspentperdish116101-amtspentperdish1103)^2
-gen double hdis_117  =  (amtspentperdish117101-amtspentperdish1103)^2
-gen double hdis_118  =  (amtspentperdish118101-amtspentperdish1103)^2
-gen double hdis_119  =  (amtspentperdish119101-amtspentperdish1103)^2
-gen double hdis_120  =  (amtspentperdish120101-amtspentperdish1103)^2
-gen double hdis_121  =  (amtspentperdish121101-amtspentperdish1103)^2
-gen double hdis_122  =  (amtspentperdish122101-amtspentperdish1103)^2
-gen double hdis_123  =  (amtspentperdish123101-amtspentperdish1103)^2
-gen double hdis_124  =  (amtspentperdish124101-amtspentperdish1103)^2
-gen double hdis_125  =  (amtspentperdish125101-amtspentperdish1103)^2
-gen double hdis_126  =  (amtspentperdish126101-amtspentperdish1103)^2
-gen double hdis_129  =  (amtspentperdish129101-amtspentperdish1103)^2
-gen double hdis_130  =  (amtspentperdish130101-amtspentperdish1103)^2
-gen double hdis_131  =  (amtspentperdish131101-amtspentperdish1103)^2
-gen double hdis_132  =  (amtspentperdish132101-amtspentperdish1103)^2
-gen double hdis_133  =  (amtspentperdish133101-amtspentperdish1103)^2
-gen double hdis_134  =  (amtspentperdish134101-amtspentperdish1103)^2
-gen double hdis_135  =  (amtspentperdish135101-amtspentperdish1103)^2
-gen double hdis_136  =  (amtspentperdish136101-amtspentperdish1103)^2
-gen double hdis_138  =  (amtspentperdish138101-amtspentperdish1103)^2
-gen double hdis_139  =  (amtspentperdish139101-amtspentperdish1103)^2
-gen double hdis_140  =  (amtspentperdish140101-amtspentperdish1103)^2
-gen double hdis_141  =  (amtspentperdish141101-amtspentperdish1103)^2
-gen double hdis_142  =  (amtspentperdish142101-amtspentperdish1103)^2
-gen double hdis_144  =  (amtspentperdish144101-amtspentperdish1103)^2
-gen double hdis_145  =  (amtspentperdish145101-amtspentperdish1103)^2
-gen double hdis_146  =  (amtspentperdish146101-amtspentperdish1103)^2
-gen double hdis_147  =  (amtspentperdish147101-amtspentperdish1103)^2
-gen double hdis_148  =  (amtspentperdish148101-amtspentperdish1103)^2
-gen double hdis_151  =  (amtspentperdish151101-amtspentperdish1103)^2
-gen double hdis_153  =  (amtspentperdish153101-amtspentperdish1103)^2
-gen double hdis_154  =  (amtspentperdish154101-amtspentperdish1103)^2
-gen double hdis_157  =  (amtspentperdish157101-amtspentperdish1103)^2
-gen double hdis_158  =  (amtspentperdish158101-amtspentperdish1103)^2
-
+gen double hdis_2  =  (amtspentperdish2101-amtspentperdish2103)^2
+gen double hdis_3  =  (amtspentperdish3101-amtspentperdish3103)^2
+gen double hdis_4  =  (amtspentperdish4101-amtspentperdish4103)^2
+gen double hdis_5  =  (amtspentperdish5101-amtspentperdish5103)^2
+gen double hdis_6  =  (amtspentperdish6101-amtspentperdish6103)^2
+gen double hdis_7  =  (amtspentperdish7101-amtspentperdish7103)^2
+gen double hdis_8  =  (amtspentperdish8101-amtspentperdish8103)^2
+gen double hdis_9  =  (amtspentperdish9101-amtspentperdish9103)^2
+gen double hdis_10  =  (amtspentperdish10101-amtspentperdish10103)^2
+gen double hdis_12  =  (amtspentperdish12101-amtspentperdish12103)^2
+gen double hdis_13  =  (amtspentperdish13101-amtspentperdish13103)^2
+gen double hdis_14  =  (amtspentperdish14101-amtspentperdish14103)^2
+gen double hdis_15  =  (amtspentperdish15101-amtspentperdish15103)^2
+gen double hdis_16  =  (amtspentperdish16101-amtspentperdish16103)^2
+gen double hdis_17  =  (amtspentperdish17101-amtspentperdish17103)^2
+gen double hdis_18  =  (amtspentperdish18101-amtspentperdish18103)^2
+gen double hdis_19  =  (amtspentperdish19101-amtspentperdish19103)^2
+gen double hdis_20  =  (amtspentperdish20101-amtspentperdish20103)^2
+gen double hdis_21  =  (amtspentperdish21101-amtspentperdish21103)^2
+gen double hdis_22  =  (amtspentperdish22101-amtspentperdish22103)^2
+gen double hdis_23  =  (amtspentperdish23101-amtspentperdish23103)^2
+gen double hdis_24  =  (amtspentperdish24101-amtspentperdish24103)^2
+gen double hdis_26  =  (amtspentperdish26101-amtspentperdish26103)^2
+gen double hdis_27  =  (amtspentperdish27101-amtspentperdish27103)^2
+gen double hdis_28  =  (amtspentperdish28101-amtspentperdish28103)^2
+gen double hdis_29  =  (amtspentperdish29101-amtspentperdish29103)^2
+gen double hdis_30  =  (amtspentperdish30101-amtspentperdish30103)^2
+gen double hdis_31  =  (amtspentperdish31101-amtspentperdish31103)^2
+gen double hdis_32  =  (amtspentperdish32101-amtspentperdish32103)^2
+gen double hdis_33  =  (amtspentperdish33101-amtspentperdish33103)^2
+gen double hdis_34  =  (amtspentperdish34101-amtspentperdish34103)^2
+gen double hdis_35  =  (amtspentperdish35101-amtspentperdish35103)^2
+gen double hdis_37  =  (amtspentperdish37101-amtspentperdish37103)^2
+gen double hdis_39  =  (amtspentperdish39101-amtspentperdish39103)^2
+gen double hdis_40  =  (amtspentperdish40101-amtspentperdish40103)^2
+gen double hdis_43  =  (amtspentperdish43101-amtspentperdish43103)^2
+gen double hdis_44  =  (amtspentperdish44101-amtspentperdish44103)^2
+gen double hdis_46  =  (amtspentperdish46101-amtspentperdish46103)^2
+gen double hdis_47  =  (amtspentperdish47101-amtspentperdish47103)^2
+gen double hdis_48  =  (amtspentperdish48101-amtspentperdish48103)^2
+gen double hdis_51  =  (amtspentperdish51101-amtspentperdish51103)^2
+gen double hdis_53  =  (amtspentperdish53101-amtspentperdish53103)^2
+gen double hdis_54  =  (amtspentperdish54101-amtspentperdish54103)^2
+gen double hdis_55  =  (amtspentperdish55101-amtspentperdish55103)^2
+gen double hdis_56  =  (amtspentperdish56101-amtspentperdish56103)^2
+gen double hdis_57  =  (amtspentperdish57101-amtspentperdish57103)^2
+gen double hdis_58  =  (amtspentperdish58101-amtspentperdish58103)^2
+gen double hdis_59  =  (amtspentperdish59101-amtspentperdish59103)^2
+gen double hdis_60  =  (amtspentperdish60101-amtspentperdish60103)^2
+gen double hdis_63  =  (amtspentperdish63101-amtspentperdish63103)^2
+gen double hdis_64  =  (amtspentperdish64101-amtspentperdish64103)^2
+gen double hdis_65  =  (amtspentperdish65101-amtspentperdish65103)^2
+gen double hdis_66  =  (amtspentperdish66101-amtspentperdish66103)^2
+gen double hdis_67  =  (amtspentperdish67101-amtspentperdish67103)^2
+gen double hdis_68  =  (amtspentperdish68101-amtspentperdish68103)^2
+gen double hdis_69  =  (amtspentperdish69101-amtspentperdish69103)^2
+gen double hdis_70  =  (amtspentperdish70101-amtspentperdish70103)^2
+gen double hdis_71  =  (amtspentperdish71101-amtspentperdish71103)^2
+gen double hdis_72  =  (amtspentperdish72101-amtspentperdish72103)^2
+gen double hdis_73  =  (amtspentperdish73101-amtspentperdish73103)^2
+gen double hdis_74  =  (amtspentperdish74101-amtspentperdish74103)^2
+gen double hdis_75  =  (amtspentperdish75101-amtspentperdish75103)^2
+gen double hdis_77  =  (amtspentperdish77101-amtspentperdish77103)^2
+gen double hdis_78  =  (amtspentperdish78101-amtspentperdish78103)^2
+gen double hdis_80  =  (amtspentperdish80101-amtspentperdish80103)^2
+gen double hdis_81  =  (amtspentperdish81101-amtspentperdish81103)^2
+gen double hdis_83  =  (amtspentperdish83101-amtspentperdish83103)^2
+gen double hdis_84  =  (amtspentperdish84101-amtspentperdish84103)^2
+gen double hdis_85  =  (amtspentperdish85101-amtspentperdish85103)^2
+gen double hdis_87  =  (amtspentperdish87101-amtspentperdish87103)^2
+gen double hdis_88  =  (amtspentperdish88101-amtspentperdish88103)^2
+gen double hdis_89  =  (amtspentperdish89101-amtspentperdish89103)^2
+gen double hdis_90  =  (amtspentperdish90101-amtspentperdish90103)^2
+gen double hdis_91  =  (amtspentperdish91101-amtspentperdish91103)^2
+gen double hdis_92  =  (amtspentperdish92101-amtspentperdish92103)^2
+gen double hdis_93  =  (amtspentperdish93101-amtspentperdish93103)^2
+gen double hdis_94  =  (amtspentperdish94101-amtspentperdish94103)^2
+gen double hdis_95  =  (amtspentperdish95101-amtspentperdish95103)^2
+gen double hdis_96  =  (amtspentperdish96101-amtspentperdish96103)^2
+gen double hdis_97  =  (amtspentperdish97101-amtspentperdish97103)^2
+gen double hdis_99  =  (amtspentperdish99101-amtspentperdish99103)^2
+gen double hdis_101  =  (amtspentperdish101101-amtspentperdish101103)^2
+gen double hdis_102  =  (amtspentperdish102101-amtspentperdish102103)^2
+gen double hdis_103  =  (amtspentperdish103101-amtspentperdish103103)^2
+gen double hdis_104  =  (amtspentperdish104101-amtspentperdish104103)^2
+gen double hdis_105  =  (amtspentperdish105101-amtspentperdish105103)^2
+gen double hdis_106  =  (amtspentperdish106101-amtspentperdish106103)^2
+gen double hdis_107  =  (amtspentperdish107101-amtspentperdish107103)^2
+gen double hdis_108  =  (amtspentperdish108101-amtspentperdish108103)^2
+gen double hdis_110  =  (amtspentperdish110101-amtspentperdish110103)^2
+gen double hdis_111  =  (amtspentperdish111101-amtspentperdish111103)^2
+gen double hdis_112  =  (amtspentperdish112101-amtspentperdish112103)^2
+gen double hdis_113  =  (amtspentperdish113101-amtspentperdish113103)^2
+gen double hdis_114  =  (amtspentperdish114101-amtspentperdish114103)^2
+gen double hdis_115  =  (amtspentperdish115101-amtspentperdish115103)^2
+gen double hdis_116  =  (amtspentperdish116101-amtspentperdish116103)^2
+gen double hdis_117  =  (amtspentperdish117101-amtspentperdish117103)^2
+gen double hdis_118  =  (amtspentperdish118101-amtspentperdish118103)^2
+gen double hdis_119  =  (amtspentperdish119101-amtspentperdish119103)^2
+gen double hdis_120  =  (amtspentperdish120101-amtspentperdish120103)^2
+gen double hdis_121  =  (amtspentperdish121101-amtspentperdish121103)^2
+gen double hdis_122  =  (amtspentperdish122101-amtspentperdish122103)^2
+gen double hdis_123  =  (amtspentperdish123101-amtspentperdish123103)^2
+gen double hdis_124  =  (amtspentperdish124101-amtspentperdish124103)^2
+gen double hdis_125  =  (amtspentperdish125101-amtspentperdish125103)^2
+gen double hdis_126  =  (amtspentperdish126101-amtspentperdish126103)^2
+gen double hdis_129  =  (amtspentperdish129101-amtspentperdish129103)^2
+gen double hdis_130  =  (amtspentperdish130101-amtspentperdish130103)^2
+gen double hdis_131  =  (amtspentperdish131101-amtspentperdish131103)^2
+gen double hdis_132  =  (amtspentperdish132101-amtspentperdish132103)^2
+gen double hdis_133  =  (amtspentperdish133101-amtspentperdish133103)^2
+gen double hdis_134  =  (amtspentperdish134101-amtspentperdish134103)^2
+gen double hdis_135  =  (amtspentperdish135101-amtspentperdish135103)^2
+gen double hdis_136  =  (amtspentperdish136101-amtspentperdish136103)^2
+gen double hdis_138  =  (amtspentperdish138101-amtspentperdish138103)^2
+gen double hdis_139  =  (amtspentperdish139101-amtspentperdish139103)^2
+gen double hdis_140  =  (amtspentperdish140101-amtspentperdish140103)^2
+gen double hdis_141  =  (amtspentperdish141101-amtspentperdish141103)^2
+gen double hdis_142  =  (amtspentperdish142101-amtspentperdish142103)^2
+gen double hdis_144  =  (amtspentperdish144101-amtspentperdish144103)^2
+gen double hdis_145  =  (amtspentperdish145101-amtspentperdish145103)^2
+gen double hdis_146  =  (amtspentperdish146101-amtspentperdish146103)^2
+gen double hdis_147  =  (amtspentperdish147101-amtspentperdish147103)^2
+gen double hdis_148  =  (amtspentperdish148101-amtspentperdish148103)^2
+gen double hdis_151  =  (amtspentperdish151101-amtspentperdish151103)^2
+gen double hdis_153  =  (amtspentperdish153101-amtspentperdish153103)^2
+gen double hdis_154  =  (amtspentperdish154101-amtspentperdish154103)^2
+gen double hdis_157  =  (amtspentperdish157101-amtspentperdish157103)^2
+gen double hdis_158  =  (amtspentperdish158101-amtspentperdish158103)^2
 
 **computing distance for wife
-
 gen double wdis_1  =  (amtspentperdish1102-amtspentperdish1103)^2
-gen double wdis_2  =  (amtspentperdish2102-amtspentperdish1103)^2
-gen double wdis_3  =  (amtspentperdish3102-amtspentperdish1103)^2
-gen double wdis_4  =  (amtspentperdish4102-amtspentperdish1103)^2
-gen double wdis_5  =  (amtspentperdish5102-amtspentperdish1103)^2
-gen double wdis_6  =  (amtspentperdish6102-amtspentperdish1103)^2
-gen double wdis_7  =  (amtspentperdish7102-amtspentperdish1103)^2
-gen double wdis_8  =  (amtspentperdish8102-amtspentperdish1103)^2
-gen double wdis_9  =  (amtspentperdish9102-amtspentperdish1103)^2
-gen double wdis_10  =  (amtspentperdish10102-amtspentperdish1103)^2
-gen double wdis_12  =  (amtspentperdish12102-amtspentperdish1103)^2
-gen double wdis_13  =  (amtspentperdish13102-amtspentperdish1103)^2
-gen double wdis_14  =  (amtspentperdish14102-amtspentperdish1103)^2
-gen double wdis_15  =  (amtspentperdish15102-amtspentperdish1103)^2
-gen double wdis_16  =  (amtspentperdish16102-amtspentperdish1103)^2
-gen double wdis_17  =  (amtspentperdish17102-amtspentperdish1103)^2
-gen double wdis_18  =  (amtspentperdish18102-amtspentperdish1103)^2
-gen double wdis_19  =  (amtspentperdish19102-amtspentperdish1103)^2
-gen double wdis_20  =  (amtspentperdish20102-amtspentperdish1103)^2
-gen double wdis_21  =  (amtspentperdish21102-amtspentperdish1103)^2
-gen double wdis_22  =  (amtspentperdish22102-amtspentperdish1103)^2
-gen double wdis_23  =  (amtspentperdish23102-amtspentperdish1103)^2
-gen double wdis_24  =  (amtspentperdish24102-amtspentperdish1103)^2
-gen double wdis_26  =  (amtspentperdish26102-amtspentperdish1103)^2
-gen double wdis_27  =  (amtspentperdish27102-amtspentperdish1103)^2
-gen double wdis_28  =  (amtspentperdish28102-amtspentperdish1103)^2
-gen double wdis_29  =  (amtspentperdish29102-amtspentperdish1103)^2
-gen double wdis_30  =  (amtspentperdish30102-amtspentperdish1103)^2
-gen double wdis_31  =  (amtspentperdish31102-amtspentperdish1103)^2
-gen double wdis_32  =  (amtspentperdish32102-amtspentperdish1103)^2
-gen double wdis_33  =  (amtspentperdish33102-amtspentperdish1103)^2
-gen double wdis_34  =  (amtspentperdish34102-amtspentperdish1103)^2
-gen double wdis_35  =  (amtspentperdish35102-amtspentperdish1103)^2
-gen double wdis_37  =  (amtspentperdish37102-amtspentperdish1103)^2
-gen double wdis_39  =  (amtspentperdish39102-amtspentperdish1103)^2
-gen double wdis_40  =  (amtspentperdish40102-amtspentperdish1103)^2
-gen double wdis_43  =  (amtspentperdish43102-amtspentperdish1103)^2
-gen double wdis_44  =  (amtspentperdish44102-amtspentperdish1103)^2
-gen double wdis_46  =  (amtspentperdish46102-amtspentperdish1103)^2
-gen double wdis_47  =  (amtspentperdish47102-amtspentperdish1103)^2
-gen double wdis_48  =  (amtspentperdish48102-amtspentperdish1103)^2
-gen double wdis_51  =  (amtspentperdish51102-amtspentperdish1103)^2
-gen double wdis_53  =  (amtspentperdish53102-amtspentperdish1103)^2
-gen double wdis_54  =  (amtspentperdish54102-amtspentperdish1103)^2
-gen double wdis_55  =  (amtspentperdish55102-amtspentperdish1103)^2
-gen double wdis_56  =  (amtspentperdish56102-amtspentperdish1103)^2
-gen double wdis_57  =  (amtspentperdish57102-amtspentperdish1103)^2
-gen double wdis_58  =  (amtspentperdish58102-amtspentperdish1103)^2
-gen double wdis_59  =  (amtspentperdish59102-amtspentperdish1103)^2
-gen double wdis_60  =  (amtspentperdish60102-amtspentperdish1103)^2
-gen double wdis_63  =  (amtspentperdish63102-amtspentperdish1103)^2
-gen double wdis_64  =  (amtspentperdish64102-amtspentperdish1103)^2
-gen double wdis_65  =  (amtspentperdish65102-amtspentperdish1103)^2
-gen double wdis_66  =  (amtspentperdish66102-amtspentperdish1103)^2
-gen double wdis_67  =  (amtspentperdish67102-amtspentperdish1103)^2
-gen double wdis_68  =  (amtspentperdish68102-amtspentperdish1103)^2
-gen double wdis_69  =  (amtspentperdish69102-amtspentperdish1103)^2
-gen double wdis_70  =  (amtspentperdish70102-amtspentperdish1103)^2
-gen double wdis_71  =  (amtspentperdish71102-amtspentperdish1103)^2
-gen double wdis_72  =  (amtspentperdish72102-amtspentperdish1103)^2
-gen double wdis_73  =  (amtspentperdish73102-amtspentperdish1103)^2
-gen double wdis_74  =  (amtspentperdish74102-amtspentperdish1103)^2
-gen double wdis_75  =  (amtspentperdish75102-amtspentperdish1103)^2
-gen double wdis_77  =  (amtspentperdish77102-amtspentperdish1103)^2
-gen double wdis_78  =  (amtspentperdish78102-amtspentperdish1103)^2
-gen double wdis_80  =  (amtspentperdish80102-amtspentperdish1103)^2
-gen double wdis_81  =  (amtspentperdish81102-amtspentperdish1103)^2
-gen double wdis_83  =  (amtspentperdish83102-amtspentperdish1103)^2
-gen double wdis_84  =  (amtspentperdish84102-amtspentperdish1103)^2
-gen double wdis_85  =  (amtspentperdish85102-amtspentperdish1103)^2
-gen double wdis_87  =  (amtspentperdish87102-amtspentperdish1103)^2
-gen double wdis_88  =  (amtspentperdish88102-amtspentperdish1103)^2
-gen double wdis_89  =  (amtspentperdish89102-amtspentperdish1103)^2
-gen double wdis_90  =  (amtspentperdish90102-amtspentperdish1103)^2
-gen double wdis_91  =  (amtspentperdish91102-amtspentperdish1103)^2
-gen double wdis_92  =  (amtspentperdish92102-amtspentperdish1103)^2
-gen double wdis_93  =  (amtspentperdish93102-amtspentperdish1103)^2
-gen double wdis_94  =  (amtspentperdish94102-amtspentperdish1103)^2
-gen double wdis_95  =  (amtspentperdish95102-amtspentperdish1103)^2
-gen double wdis_96  =  (amtspentperdish96102-amtspentperdish1103)^2
-gen double wdis_97  =  (amtspentperdish97102-amtspentperdish1103)^2
-gen double wdis_99  =  (amtspentperdish99102-amtspentperdish1103)^2
-gen double wdis_101  =  (amtspentperdish101102-amtspentperdish1103)^2
-gen double wdis_102  =  (amtspentperdish102102-amtspentperdish1103)^2
-gen double wdis_103  =  (amtspentperdish103102-amtspentperdish1103)^2
-gen double wdis_104  =  (amtspentperdish104102-amtspentperdish1103)^2
-gen double wdis_105  =  (amtspentperdish105102-amtspentperdish1103)^2
-gen double wdis_106  =  (amtspentperdish106102-amtspentperdish1103)^2
-gen double wdis_107  =  (amtspentperdish107102-amtspentperdish1103)^2
-gen double wdis_108  =  (amtspentperdish108102-amtspentperdish1103)^2
-gen double wdis_110  =  (amtspentperdish110102-amtspentperdish1103)^2
-gen double wdis_111  =  (amtspentperdish111102-amtspentperdish1103)^2
-gen double wdis_112  =  (amtspentperdish112102-amtspentperdish1103)^2
-gen double wdis_113  =  (amtspentperdish113102-amtspentperdish1103)^2
-gen double wdis_114  =  (amtspentperdish114102-amtspentperdish1103)^2
-gen double wdis_115  =  (amtspentperdish115102-amtspentperdish1103)^2
-gen double wdis_116  =  (amtspentperdish116102-amtspentperdish1103)^2
-gen double wdis_117  =  (amtspentperdish117102-amtspentperdish1103)^2
-gen double wdis_118  =  (amtspentperdish118102-amtspentperdish1103)^2
-gen double wdis_119  =  (amtspentperdish119102-amtspentperdish1103)^2
-gen double wdis_120  =  (amtspentperdish120102-amtspentperdish1103)^2
-gen double wdis_121  =  (amtspentperdish121102-amtspentperdish1103)^2
-gen double wdis_122  =  (amtspentperdish122102-amtspentperdish1103)^2
-gen double wdis_123  =  (amtspentperdish123102-amtspentperdish1103)^2
-gen double wdis_124  =  (amtspentperdish124102-amtspentperdish1103)^2
-gen double wdis_125  =  (amtspentperdish125102-amtspentperdish1103)^2
-gen double wdis_126  =  (amtspentperdish126102-amtspentperdish1103)^2
-gen double wdis_129  =  (amtspentperdish129102-amtspentperdish1103)^2
-gen double wdis_130  =  (amtspentperdish130102-amtspentperdish1103)^2
-gen double wdis_131  =  (amtspentperdish131102-amtspentperdish1103)^2
-gen double wdis_132  =  (amtspentperdish132102-amtspentperdish1103)^2
-gen double wdis_133  =  (amtspentperdish133102-amtspentperdish1103)^2
-gen double wdis_134  =  (amtspentperdish134102-amtspentperdish1103)^2
-gen double wdis_135  =  (amtspentperdish135102-amtspentperdish1103)^2
-gen double wdis_136  =  (amtspentperdish136102-amtspentperdish1103)^2
-gen double wdis_138  =  (amtspentperdish138102-amtspentperdish1103)^2
-gen double wdis_139  =  (amtspentperdish139102-amtspentperdish1103)^2
-gen double wdis_140  =  (amtspentperdish140102-amtspentperdish1103)^2
-gen double wdis_141  =  (amtspentperdish141102-amtspentperdish1103)^2
-gen double wdis_142  =  (amtspentperdish142102-amtspentperdish1103)^2
-gen double wdis_144  =  (amtspentperdish144102-amtspentperdish1103)^2
-gen double wdis_145  =  (amtspentperdish145102-amtspentperdish1103)^2
-gen double wdis_146  =  (amtspentperdish146102-amtspentperdish1103)^2
-gen double wdis_147  =  (amtspentperdish147102-amtspentperdish1103)^2
-gen double wdis_148  =  (amtspentperdish148102-amtspentperdish1103)^2
-gen double wdis_151  =  (amtspentperdish151102-amtspentperdish1103)^2
-gen double wdis_153  =  (amtspentperdish153102-amtspentperdish1103)^2
-gen double wdis_154  =  (amtspentperdish154102-amtspentperdish1103)^2
-gen double wdis_157  =  (amtspentperdish157102-amtspentperdish1103)^2
-gen double wdis_158  =  (amtspentperdish158102-amtspentperdish1103)^2
+gen double wdis_2  =  (amtspentperdish2102-amtspentperdish2103)^2
+gen double wdis_3  =  (amtspentperdish3102-amtspentperdish3103)^2
+gen double wdis_4  =  (amtspentperdish4102-amtspentperdish4103)^2
+gen double wdis_5  =  (amtspentperdish5102-amtspentperdish5103)^2
+gen double wdis_6  =  (amtspentperdish6102-amtspentperdish6103)^2
+gen double wdis_7  =  (amtspentperdish7102-amtspentperdish7103)^2
+gen double wdis_8  =  (amtspentperdish8102-amtspentperdish8103)^2
+gen double wdis_9  =  (amtspentperdish9102-amtspentperdish9103)^2
+gen double wdis_10  =  (amtspentperdish10102-amtspentperdish10103)^2
+gen double wdis_12  =  (amtspentperdish12102-amtspentperdish12103)^2
+gen double wdis_13  =  (amtspentperdish13102-amtspentperdish13103)^2
+gen double wdis_14  =  (amtspentperdish14102-amtspentperdish14103)^2
+gen double wdis_15  =  (amtspentperdish15102-amtspentperdish15103)^2
+gen double wdis_16  =  (amtspentperdish16102-amtspentperdish16103)^2
+gen double wdis_17  =  (amtspentperdish17102-amtspentperdish17103)^2
+gen double wdis_18  =  (amtspentperdish18102-amtspentperdish18103)^2
+gen double wdis_19  =  (amtspentperdish19102-amtspentperdish19103)^2
+gen double wdis_20  =  (amtspentperdish20102-amtspentperdish20103)^2
+gen double wdis_21  =  (amtspentperdish21102-amtspentperdish21103)^2
+gen double wdis_22  =  (amtspentperdish22102-amtspentperdish22103)^2
+gen double wdis_23  =  (amtspentperdish23102-amtspentperdish23103)^2
+gen double wdis_24  =  (amtspentperdish24102-amtspentperdish24103)^2
+gen double wdis_26  =  (amtspentperdish26102-amtspentperdish26103)^2
+gen double wdis_27  =  (amtspentperdish27102-amtspentperdish27103)^2
+gen double wdis_28  =  (amtspentperdish28102-amtspentperdish28103)^2
+gen double wdis_29  =  (amtspentperdish29102-amtspentperdish29103)^2
+gen double wdis_30  =  (amtspentperdish30102-amtspentperdish30103)^2
+gen double wdis_31  =  (amtspentperdish31102-amtspentperdish31103)^2
+gen double wdis_32  =  (amtspentperdish32102-amtspentperdish32103)^2
+gen double wdis_33  =  (amtspentperdish33102-amtspentperdish33103)^2
+gen double wdis_34  =  (amtspentperdish34102-amtspentperdish34103)^2
+gen double wdis_35  =  (amtspentperdish35102-amtspentperdish35103)^2
+gen double wdis_37  =  (amtspentperdish37102-amtspentperdish37103)^2
+gen double wdis_39  =  (amtspentperdish39102-amtspentperdish39103)^2
+gen double wdis_40  =  (amtspentperdish40102-amtspentperdish40103)^2
+gen double wdis_43  =  (amtspentperdish43102-amtspentperdish43103)^2
+gen double wdis_44  =  (amtspentperdish44102-amtspentperdish44103)^2
+gen double wdis_46  =  (amtspentperdish46102-amtspentperdish46103)^2
+gen double wdis_47  =  (amtspentperdish47102-amtspentperdish47103)^2
+gen double wdis_48  =  (amtspentperdish48102-amtspentperdish48103)^2
+gen double wdis_51  =  (amtspentperdish51102-amtspentperdish51103)^2
+gen double wdis_53  =  (amtspentperdish53102-amtspentperdish53103)^2
+gen double wdis_54  =  (amtspentperdish54102-amtspentperdish54103)^2
+gen double wdis_55  =  (amtspentperdish55102-amtspentperdish55103)^2
+gen double wdis_56  =  (amtspentperdish56102-amtspentperdish56103)^2
+gen double wdis_57  =  (amtspentperdish57102-amtspentperdish57103)^2
+gen double wdis_58  =  (amtspentperdish58102-amtspentperdish58103)^2
+gen double wdis_59  =  (amtspentperdish59102-amtspentperdish59103)^2
+gen double wdis_60  =  (amtspentperdish60102-amtspentperdish60103)^2
+gen double wdis_63  =  (amtspentperdish63102-amtspentperdish63103)^2
+gen double wdis_64  =  (amtspentperdish64102-amtspentperdish64103)^2
+gen double wdis_65  =  (amtspentperdish65102-amtspentperdish65103)^2
+gen double wdis_66  =  (amtspentperdish66102-amtspentperdish66103)^2
+gen double wdis_67  =  (amtspentperdish67102-amtspentperdish67103)^2
+gen double wdis_68  =  (amtspentperdish68102-amtspentperdish68103)^2
+gen double wdis_69  =  (amtspentperdish69102-amtspentperdish69103)^2
+gen double wdis_70  =  (amtspentperdish70102-amtspentperdish70103)^2
+gen double wdis_71  =  (amtspentperdish71102-amtspentperdish71103)^2
+gen double wdis_72  =  (amtspentperdish72102-amtspentperdish72103)^2
+gen double wdis_73  =  (amtspentperdish73102-amtspentperdish73103)^2
+gen double wdis_74  =  (amtspentperdish74102-amtspentperdish74103)^2
+gen double wdis_75  =  (amtspentperdish75102-amtspentperdish75103)^2
+gen double wdis_77  =  (amtspentperdish77102-amtspentperdish77103)^2
+gen double wdis_78  =  (amtspentperdish78102-amtspentperdish78103)^2
+gen double wdis_80  =  (amtspentperdish80102-amtspentperdish80103)^2
+gen double wdis_81  =  (amtspentperdish81102-amtspentperdish81103)^2
+gen double wdis_83  =  (amtspentperdish83102-amtspentperdish83103)^2
+gen double wdis_84  =  (amtspentperdish84102-amtspentperdish84103)^2
+gen double wdis_85  =  (amtspentperdish85102-amtspentperdish85103)^2
+gen double wdis_87  =  (amtspentperdish87102-amtspentperdish87103)^2
+gen double wdis_88  =  (amtspentperdish88102-amtspentperdish88103)^2
+gen double wdis_89  =  (amtspentperdish89102-amtspentperdish89103)^2
+gen double wdis_90  =  (amtspentperdish90102-amtspentperdish90103)^2
+gen double wdis_91  =  (amtspentperdish91102-amtspentperdish91103)^2
+gen double wdis_92  =  (amtspentperdish92102-amtspentperdish92103)^2
+gen double wdis_93  =  (amtspentperdish93102-amtspentperdish93103)^2
+gen double wdis_94  =  (amtspentperdish94102-amtspentperdish94103)^2
+gen double wdis_95  =  (amtspentperdish95102-amtspentperdish95103)^2
+gen double wdis_96  =  (amtspentperdish96102-amtspentperdish96103)^2
+gen double wdis_97  =  (amtspentperdish97102-amtspentperdish97103)^2
+gen double wdis_99  =  (amtspentperdish99102-amtspentperdish99103)^2
+gen double wdis_101  =  (amtspentperdish101102-amtspentperdish101103)^2
+gen double wdis_102  =  (amtspentperdish102102-amtspentperdish102103)^2
+gen double wdis_103  =  (amtspentperdish103102-amtspentperdish103103)^2
+gen double wdis_104  =  (amtspentperdish104102-amtspentperdish104103)^2
+gen double wdis_105  =  (amtspentperdish105102-amtspentperdish105103)^2
+gen double wdis_106  =  (amtspentperdish106102-amtspentperdish106103)^2
+gen double wdis_107  =  (amtspentperdish107102-amtspentperdish107103)^2
+gen double wdis_108  =  (amtspentperdish108102-amtspentperdish108103)^2
+gen double wdis_110  =  (amtspentperdish110102-amtspentperdish110103)^2
+gen double wdis_111  =  (amtspentperdish111102-amtspentperdish111103)^2
+gen double wdis_112  =  (amtspentperdish112102-amtspentperdish112103)^2
+gen double wdis_113  =  (amtspentperdish113102-amtspentperdish113103)^2
+gen double wdis_114  =  (amtspentperdish114102-amtspentperdish114103)^2
+gen double wdis_115  =  (amtspentperdish115102-amtspentperdish115103)^2
+gen double wdis_116  =  (amtspentperdish116102-amtspentperdish116103)^2
+gen double wdis_117  =  (amtspentperdish117102-amtspentperdish117103)^2
+gen double wdis_118  =  (amtspentperdish118102-amtspentperdish118103)^2
+gen double wdis_119  =  (amtspentperdish119102-amtspentperdish119103)^2
+gen double wdis_120  =  (amtspentperdish120102-amtspentperdish120103)^2
+gen double wdis_121  =  (amtspentperdish121102-amtspentperdish121103)^2
+gen double wdis_122  =  (amtspentperdish122102-amtspentperdish122103)^2
+gen double wdis_123  =  (amtspentperdish123102-amtspentperdish123103)^2
+gen double wdis_124  =  (amtspentperdish124102-amtspentperdish124103)^2
+gen double wdis_125  =  (amtspentperdish125102-amtspentperdish125103)^2
+gen double wdis_126  =  (amtspentperdish126102-amtspentperdish126103)^2
+gen double wdis_129  =  (amtspentperdish129102-amtspentperdish129103)^2
+gen double wdis_130  =  (amtspentperdish130102-amtspentperdish130103)^2
+gen double wdis_131  =  (amtspentperdish131102-amtspentperdish131103)^2
+gen double wdis_132  =  (amtspentperdish132102-amtspentperdish132103)^2
+gen double wdis_133  =  (amtspentperdish133102-amtspentperdish133103)^2
+gen double wdis_134  =  (amtspentperdish134102-amtspentperdish134103)^2
+gen double wdis_135  =  (amtspentperdish135102-amtspentperdish135103)^2
+gen double wdis_136  =  (amtspentperdish136102-amtspentperdish136103)^2
+gen double wdis_138  =  (amtspentperdish138102-amtspentperdish138103)^2
+gen double wdis_139  =  (amtspentperdish139102-amtspentperdish139103)^2
+gen double wdis_140  =  (amtspentperdish140102-amtspentperdish140103)^2
+gen double wdis_141  =  (amtspentperdish141102-amtspentperdish141103)^2
+gen double wdis_142  =  (amtspentperdish142102-amtspentperdish142103)^2
+gen double wdis_144  =  (amtspentperdish144102-amtspentperdish144103)^2
+gen double wdis_145  =  (amtspentperdish145102-amtspentperdish145103)^2
+gen double wdis_146  =  (amtspentperdish146102-amtspentperdish146103)^2
+gen double wdis_147  =  (amtspentperdish147102-amtspentperdish147103)^2
+gen double wdis_148  =  (amtspentperdish148102-amtspentperdish148103)^2
+gen double wdis_151  =  (amtspentperdish151102-amtspentperdish151103)^2
+gen double wdis_153  =  (amtspentperdish153102-amtspentperdish153103)^2
+gen double wdis_154  =  (amtspentperdish154102-amtspentperdish154103)^2
+gen double wdis_157  =  (amtspentperdish157102-amtspentperdish157103)^2
+gen double wdis_158  =  (amtspentperdish158102-amtspentperdish158103)^2
+
 
 drop amtspentperdish1101- amtspentperdish158103
 
@@ -477,7 +478,6 @@ reshape long hdis_ wdis_, i(iresid) j (dish)
 
     **computing the sum distances
       collapse (sum)hdis_ wdis_ , by (iresid)
-
 
     **computing Euclidean distance
 
@@ -506,18 +506,20 @@ label variable widmp_dishspent "Women’s intrahousehold decision making power u
 summarize
 twoway kdensity midmp_dishspent || kdensity widmp_dishspent
 
-
-
-**adding uniqueID for each hh using iresid var
-merge 1:1 iresid using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000_ihdmp_models.dta"
-keep widmp_dishspent midmp_dishspent ///
-		weekends_both Morning Kolkata ///
-        BCC1 BCC2 BCC3 PBC_00 hunger_h hunger_w husband0 wife0 ///
-	    highschool_h highschool_w agriocc_h employed_w ///
-	    inv_allw  ref incpercap000  ///
-	    source_hlabel source_wlabel hhsize wchild wseniors iresid
-		
-gen double hunger=round(hunger_h/hunger_w,0.0001)
 		
 save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\17analysis_ihdmpdishspent.dta", replace
 ****
+
+clear all
+
+use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta", clear
+edit uniqueID session hh round iresid hunger_ratio hunger_h hunger_w
+drop if round<3
+
+
+merge 1:1 iresid using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\17analysis_ihdmpdishspent.dta"
+drop _merge
+
+****	
+save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\17analysis_ihdmpdishspent.dta", replace
+
