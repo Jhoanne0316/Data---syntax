@@ -166,7 +166,7 @@ label variable value "value of a dish(quantity*cost)-household level"
 label variable valpercap "value of a dish(quantity*cost) per capita"
 label variable SSBC "Self-reported status of being budget-constrained"
 */
-save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta", replace
+save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_mergefile.dta", replace
 
 
 
