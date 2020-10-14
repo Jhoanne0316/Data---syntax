@@ -2,7 +2,7 @@
 /*******occasion indicator********/
 clear all
 
-use "D:\Google Drive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\dfc_masterfile.dta", clear
+use "D:\Google Drive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\dfc_masterfile.dta", clear/*for updating*/
 
 keep uniqueID occasion
 
