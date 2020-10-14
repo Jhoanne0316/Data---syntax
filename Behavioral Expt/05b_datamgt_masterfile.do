@@ -1,7 +1,7 @@
 ***************************************************************************
 
 *                 VARIABLES TO CONSIDER IN ECONOMETRIC MODELS             *
-*    in editing 05dfc_masterfile.dta, do 05b_data_merging program first
+*    in editing 05dfc_masterfile.dta, do 05a_data_merging program first
 ***************************************************************************
 clear all
 
