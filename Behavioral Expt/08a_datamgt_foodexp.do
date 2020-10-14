@@ -6,7 +6,8 @@ use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\
 
 
 /************** DATA MANAGEMENT FOR INDEPENDENT VARIABLES******************/
-keep     uniqueID session hh round day occasion foodgroup_dish dish quantity cost hhsize weeklypercapitabudget
+keep     uniqueID session hh round day occasion foodgroup_dish dish quantity ///
+         cost hhsize weeklypercapitabudget
 sort     uniqueID day occasion
 
 /**generating the deflated budget as the basis for total budget received by the ///
@@ -34,22 +35,25 @@ replace   foodgroup_dish="06Fruit"          if foodgroup==6
 /*label new variables*/
 label    variable amtspentperdish "amount spent per dish"
 
-sort     uniqueID day foodgroup_dish 
+sort     uniqueID foodgroup_dish 
 edit     uniqueID session hh round day foodgroup_dish dish amtspentperdish
 
 ***computing the budget spent per foodgroup_dish for each respondent
-sort     uniqueID foodgroup_dish 
+*note: compute sum for two days since budget is for two days 
+
+sort     uniqueID foodgroup_dish
+
 collapse (sum) amtspentperdish (mean) foodgroup, by (uniqueID foodgroup_dish)
-rename amtspentperdish amtspentperfoodgrp
+rename   amtspentperdish amtspentperfoodgrp
 
 ***reshaping the data to create investment variables for each foodgroup
-drop foodgroup_dish
+drop     foodgroup_dish
 reshape  wide amtspentperfoodgrp, i(uniqueID) j (foodgroup)
 
 *replaceing zero indicating that the respondent did not spend any amount for a particular food group
-foreach v of varlist amtspentperfoodgrp1-amtspentperfoodgrp6 {
-    replace `v' =0 if `v'==.
-  }
+foreach  v of varlist amtspentperfoodgrp1-amtspentperfoodgrp6 {
+         replace `v' =0 if `v'==.
+          }
 
 *compute the average energy shares among foodgroup
 gen      totalamountspent=amtspentperfoodgrp1+ amtspentperfoodgrp2+ amtspentperfoodgrp3+ ///
@@ -78,15 +82,18 @@ label     variable unspentbudget   "total amount unspent in the budget"
 
 edit      uniqueID  totalamountspent unspentbudget totalbudget 
 *************************************************
-*check whether the total amtspentperdish is equal to the total budget
-**do not include in the analysis. This section is to check whether total amtspentperdish does not have an excess on total budget
+/*check whether the total amtspentperdish is equal to the total budget
+**do not include in the analysis. This section is to check whether total 
+amtspentperdish does not have an excess on total budget */
 
 gen       excess=1 if unspentbudget<0
 replace   excess=0 if unspentbudget>=0
 summarize unspent if excess==1 /*44 obs*/
 
 
-***to adjust excess spending from the app, the excessive budget was takes as the randomized budget for the household
+/**to adjust excess spending from the app, the excessive budget was takes as 
+   the randomized budget for the household */
+   
 edit      uniqueID  totalamountspent unspentbudget totalbudget if excess==1
 
 replace   totalbudget=totalamountspent if excess==1
@@ -118,11 +125,17 @@ gen       double  s0_totalamountspent=round(starch+ nonveg+ pulses+ dairy+ veg+ 
 edit      starch- savings s0_totalamountspent
 sort      s0_totalamountspent
 
-gen       dum_s0_totalamountspent=3 if s0_totalamountspent>1.0001 & s0_totalamountspent!=. /*subtract 0.0002 */
-replace   dum_s0_totalamountspent=2 if s0_totalamountspent>1      & s0_totalamountspent <1.0002 &  s0_totalamountspent!=. /*subtract 0.0001 */
-replace   dum_s0_totalamountspent=1 if s0_totalamountspent<1      & s0_totalamountspent!=. /*add 0.0001*/
-replace   dum_s0_totalamountspent=-1 if s0_totalamountspent<1     & s0_totalamountspent < 0.9999 /*add 0.0001*/
-replace   dum_s0_totalamountspent=0 if s0_totalamountspent==1     & s0_totalamountspent!=. 
+gen       dum_s0_totalamountspent=3  if s0_totalamountspent>1.0001 & ///
+          s0_totalamountspent!=. /*subtract 0.0002 */
+replace   dum_s0_totalamountspent=2  if s0_totalamountspent>1  ///
+          & s0_totalamountspent <1.0002 &  s0_totalamountspent!=. 
+		  /*subtract 0.0001 */
+replace   dum_s0_totalamountspent=1  if s0_totalamountspent<1  ///
+          & s0_totalamountspent!=. /*add 0.0001*/
+replace   dum_s0_totalamountspent=-1 if s0_totalamountspent<1  ///
+          & s0_totalamountspent < 0.9999 /*add 0.0001*/
+replace   dum_s0_totalamountspent=0  if s0_totalamountspent==1  ///
+          & s0_totalamountspent!=. 
 tab       dum_s0_totalamountspent
 
 
@@ -135,9 +148,10 @@ replace   s0_totalamountspent=starch+ nonveg+ pulses+ dairy+ veg+ fruit+ savings
 
 summarize s0_totalamountspent
 
-drop      amtspentperfoodgrp1 amtspentperfoodgrp2 amtspentperfoodgrp3 amtspentperfoodgrp4 ///
-          amtspentperfoodgrp5 amtspentperfoodgrp6 totalamountspent  s0_totalamountspent ///
-		  dum_s0_totalamountspent excess unspentbudget
+drop      amtspentperfoodgrp1 amtspentperfoodgrp2 amtspentperfoodgrp3 ///
+          amtspentperfoodgrp4 amtspentperfoodgrp5 amtspentperfoodgrp6 ///
+		  totalamountspent  s0_totalamountspent dum_s0_totalamountspent ///
+		  excess unspentbudget
 
 ***labelling variable description*
 
@@ -149,38 +163,41 @@ label     variable veg     "Veg-food expenditure shares"
 label     variable fruit   "Fruit-food expenditure shares"
 label     variable savings "Savings-food expenditure shares"
 
-twoway kdensity starch if round ==1 || kdensity starch if round ==2 ///
-                ||kdensity starch if round ==3, ///
-                legend(order(1 "husband" 2 "wife" 3 "consensus"))
+sort uniqueID
+edit uniqueID starch nonveg pulses dairy veg fruit savings
 
-twoway kdensity nonveg if round ==1 || kdensity nonveg if round ==2 ///
-                ||kdensity nonveg if round ==3, ///
-                legend(order(1 "husband" 2 "wife" 3 "consensus"))
+twoway    kdensity starch if round ==1 || kdensity starch if round ==2 ///
+                                       || kdensity starch if round ==3, ///
+                   legend(order(1 "husband" 2 "wife" 3 "consensus"))
+
+twoway    kdensity nonveg if round ==1 || kdensity nonveg if round ==2 ///
+                                       || kdensity nonveg if round ==3, ///
+                   legend(order(1 "husband" 2 "wife" 3 "consensus"))
 				
-twoway kdensity pulses if round ==1 || kdensity pulses if round ==2 ///
-                ||kdensity pulses if round ==3, ///
-                legend(order(1 "husband" 2 "wife" 3 "consensus"))
+twoway    kdensity pulses  if round ==1 || kdensity pulses if round ==2 ///
+                                        || kdensity pulses if round ==3, ///
+                   legend(order(1 "husband" 2 "wife" 3 "consensus"))
 
-twoway kdensity dairy if round ==1 || kdensity dairy if round ==2 ///
-                ||kdensity dairy if round ==3, ///
-                legend(order(1 "husband" 2 "wife" 3 "consensus"))
+twoway    kdensity dairy   if round ==1 || kdensity dairy if round ==2 ///
+                                        || kdensity dairy if round ==3, ///
+                   legend(order(1 "husband" 2 "wife" 3 "consensus"))
 
-twoway kdensity vegif round ==1 || kdensity vegif round ==2 ///
-                ||kdensity vegif round ==3, ///
-                legend(order(1 "husband" 2 "wife" 3 "consensus"))
+twoway    kdensity veg     if round ==1 || kdensity veg   if round ==2 ///
+                                        || kdensity veg   if round ==3, ///
+                   legend(order(1 "husband" 2 "wife" 3 "consensus"))
 
-twoway kdensity fruit if round ==1 || kdensity fruit if round ==2 ///
-                ||kdensity fruit if round ==3, ///
-                legend(order(1 "husband" 2 "wife" 3 "consensus"))
+twoway    kdensity fruit   if round ==1 || kdensity fruit if round ==2 ///
+                                        || kdensity fruit if round ==3, ///
+                   legend(order(1 "husband" 2 "wife" 3 "consensus"))
 				
-twoway kdensity savings if round ==1 || kdensity savings if round ==2 ///
-                ||kdensity savings if round ==3, ///
-                legend(order(1 "husband" 2 "wife" 3 "consensus"))
+twoway    kdensity savings if round ==1 || kdensity savings if round ==2 ///
+                                        ||  kdensity savings if round ==3, ///
+                  legend(order(1 "husband" 2 "wife" 3 "consensus"))
 				
-twoway kdensity starch || kdensity nonveg || kdensity pulses || kdensity dairy ///
-                || kdensity veg|| kdensity fruit || kdensity savings, ///
-                legend(order(1 "Starch" 2 "Non-veg" 3 "Pulses" 4 "Dairy" ///
-				5 "Vegetables" 6 "Fruit" 7 "Savings"))
+twoway    kdensity starch || kdensity nonveg || kdensity pulses || kdensity dairy ///
+                          || kdensity veg    || kdensity fruit  || kdensity savings, ///
+                  legend(order(1 "Starch"     2 "Non-veg" 3 "Pulses" 4 "Dairy" ///
+				               5 "Vegetables" 6 "Fruit"   7 "Savings"))
 
 				
 save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\08analysis_foodexp.dta", replace
