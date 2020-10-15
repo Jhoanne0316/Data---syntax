@@ -1551,11 +1551,11 @@ describe
 ************
 *adding iresid to uniquely identify a household
 sort uniqueID
-merge 1:1 session hh round using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\dfc_iresid.dta"
+merge 1:1 session hh round using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\00a_iresid.dta"
 drop _merge
 
 **adding dummy variable occasion in the data for each respondent
-merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\Food app 2018\occasion_indicator.dta"
+merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\00b_occID.dta"
 drop _merge
 
 tab breakfast 
@@ -1575,7 +1575,7 @@ save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data
 clear all
 
 use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta"
-merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\00uniqueID.dta"
+merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\00c_uniqueID.dta"
 
 keep uniqueID round rnd hunger_h hunger_w  hunger_ave
 
