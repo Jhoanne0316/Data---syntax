@@ -1,6 +1,12 @@
 *********************************************
 * TESTING MUTLICOLLINEARITY AMONG VARIABLES *
 *********************************************
+**----------------multicolinearity using VIF--------------------**/
+/**http://www.math.kth.se/matstat/gru/sf2930/papers/VIF%20article.pdf**/
+/*Rules of thumb for values of VIF have appeared in the literature: the
+rule of 4, rule of 10, etc. When VIF exceeds these values, these rules
+often are interpreted as casting doubts on the results of the regression
+analysis*/
 
 clear all
 
