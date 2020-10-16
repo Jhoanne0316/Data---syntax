@@ -1,157 +1,78 @@
 
 /*******rice per day**********/
-
+****15 Oct 2020*********
 
 clear all
 
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\14b_analysis_rice.dta", clear
+use     "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\07analysis_ricecap.dta", clear
 
-describe steamed otherrice allrice stricepercap otricepercap allricepercap logstricepercap logotricepercap logallricepercap
+**variable description
+describe  logricepercap ricepercap ///
+		  weekends_both Morning       Kolkata                               ///
+          BCC1          BCC2          BCC3                                  ///
+		  T1            T2            T3                                    ///
+		  PBC_00        hunger_indiv  husband0     wife0                    ///
+	      highschool_h  highschool_w  agriocc_h    employed_w               ///
+		  inv_allw      ref           incpercap000                          ///
+		  source_hlabel source_wlabel hhsize       wchild     wseniors
+
+**desc statistics
 sort round
-by round: summarize steamed otherrice allrice stricepercap otricepercap allricepercap logstricepercap logotricepercap logallricepercap
+by   round: summarize logricepercap ricepercap ///
+					  weekends_both Morning       Kolkata                               ///
+					  BCC1          BCC2          BCC3                                  ///
+					  T1            T2            T3                                    ///
+					  PBC_00        hunger_indiv  husband0  wife0                       ///
+					  highschool_h  highschool_w  agriocc_h employed_w                  ///
+					  inv_allw      ref           incpercap000                          ///
+					  source_hlabel source_wlabel hhsize    wchild     wseniors
 
-******************
-* steamed rice
-******************
+
+******************************************************************************************
+*                           START OF ANALYSIS
+******************************************************************************************
+
 
 clear all
 
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\14b_analysis_rice.dta", clear
+use     "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\07analysis_ricecap.dta", clear
 
-regress stricepercap weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w work_hfull work_whousewife ///
-	 inv_allw  ref incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, ///
-	  vce (cluster iresid) 
-	 
+********************************************			  
+**  OLS:ricepercap  
+*result: not normally distributed errors   *
+********************************************	
+					  
+regress ricepercap    weekends_both Morning       Kolkata                               ///
+		BCC1          BCC2          BCC3                                  ///
+	    PBC_00        hunger_indiv  husband0  wife0                       ///
+		highschool_h  highschool_w  agriocc_h employed_w                  ///
+		inv_allw      ref           incpercap000                          ///
+		source_hlabel source_wlabel hhsize    wchild     wseniors, ///
+	    vce (cluster iresid) 
 
-vif 
-/*mean VIF=1.75*/
-
-predict ystricepercap
-
-/*checking whether errors are normal*/
-gen e=stricepercap-ystricepercap
-swilk e
-
-**does not follow the normal distribution
-
-
-
-******************
-* log steamed rice
-******************
-
-clear all
-
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\14b_analysis_rice.dta", clear
-
-regress logstricepercap weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w work_hfull work_whousewife ///
-	 inv_allw  ref incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, ///
-	  vce (cluster iresid) 
-	 
-
-vif 
-/*mean VIF=1.75*/
-
-predict ylogstricepercap
+predict yricepercap
 
 /*checking whether errors are normal*/
-gen e=logstricepercap-ylogstricepercap
-swilk e
+gen     e=ricepercap-yricepercap
+swilk   e
 
-**does not follow the normal distribution
+/*****************************************
+ logarithmic:logricepercap  
+result: not normally distributed errors 
+******************************************/
+					  
+regress logricepercap weekends_both Morning       Kolkata                               ///
+		BCC1          BCC2          BCC3                                  ///
+	    PBC_00        hunger_indiv  husband0  wife0                       ///
+		highschool_h  highschool_w  agriocc_h employed_w                  ///
+		inv_allw      ref           incpercap000                          ///
+		source_hlabel source_wlabel hhsize    wchild     wseniors, ///
+	    vce (cluster iresid) 
 
-
-
-******************
-* all rice
-******************
-
-clear all
-
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\14b_analysis_rice.dta", clear
-
-regress allricepercap weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w work_hfull work_whousewife ///
-	 inv_allw  ref incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, ///
-	  vce (cluster iresid) 
-	 
-
-vif 
-/*mean VIF=1.75*/
-
-predict yallricepercap
+predict ylogricepercap
 
 /*checking whether errors are normal*/
-gen e=allricepercap-yallricepercap
-swilk e
+gen     e2=logricepercap-ylogricepercap
+swilk   e2
 
-**does not follow the normal distribution
-
-
-
-******************
-* log all rice
-******************
-
-clear all
-
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\14b_analysis_rice.dta", clear
-
-regress logallricepercap weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w work_hfull work_whousewife ///
-	 inv_allw  ref incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, ///
-	  vce (cluster iresid) 
-	 
-
-vif 
-/*mean VIF=1.75*/
-
-predict ylogallricepercap
-
-/*checking whether errors are normal*/
-gen e=logallricepercap-ylogallricepercap
-swilk e
-/*
- 
-                   Shapiro-Wilk W test for normal data
-
-    Variable |        Obs       W           V         z       Prob>z
--------------+------------------------------------------------------
-           e |        529    0.99492      1.800     1.416    0.07840
-
-*/
-
-
-****AUG 18 2020*********
-
-clear all
-
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\14analysis_ricecap.dta", clear
-
-* allocated for Rice per capita
-regress logallricepercap weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w agriocc_h employed_w ///
-	 inv_allw  ref incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, ///
-	  vce (cluster iresid) 
-	  
-	  
-vif 
-/*mean VIF=1.75*/
-
-predict ylogallricepercap
-
-/*checking whether errors are normal*/
-gen e=logallricepercap-ylogallricepercap
-swilk e
+********************END****************************
