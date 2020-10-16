@@ -3,59 +3,49 @@ clear all
 
 use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_mergefile.dta", clear
 
+keep     uniqueID session hh round day dish quantity Amount_gm hhsize
+sort     uniqueID day dish
 
-tab dish
-tab round if dish=="Steamed rice"
-edit uniqueID quantity hhsize Amount_gm if dish=="Steamed rice"
+edit     uniqueID day dish quantity Amount_gm hhsize 
 
-gen double dishwtpercap=round(quantity*Amount_gm,0.001)/hhsize
+* allrice "has rice in meal plan"
+gen      allrice=1   if dish=="Fried rice"|dish=="Panta rice"|dish=="Puffed rice"| ///
+                        dish=="Raw rice"|dish=="Steamed rice"
 
-collapse (mean) quantity hhsize Amount_gm dishwtpercap, by (uniqueID dish)
+keep     if allrice==1
 
-label variable dishwtpercap "ave dish weight per capita per day"
+gen      double riceperday =round(quantity*Amount_gm,0.0001)
+gen      double ricepercap =round(riceperday/hhsize , 0.0001)
 
-gen steamed=1 if dish=="Steamed rice"
-gen otherrice=1 if dish=="Fried rice"|dish=="Panta rice"|dish=="Puffed rice"|dish=="Raw rice"
-gen allrice=1 if dish=="Fried rice"|dish=="Panta rice"|dish=="Puffed rice"|dish=="Raw rice"|dish=="Steamed rice"
-
-
-gen stricepercap=dishwtpercap if steamed==1
-gen otricepercap=dishwtpercap if otherrice==1
-gen allricepercap=dishwtpercap if allrice==1
+*computing the total rice consumed per capita per day
+collapse (sum)  ricepercap, by (uniqueID day)
 
 
-collapse (mean) steamed otherrice allrice  stricepercap otricepercap allricepercap, by (uniqueID)
+*computing the average rice consumption per capita per day
+collapse (mean) ricepercap, by (uniqueID)
 
-replace steamed=0 if steamed==.
-replace otherrice=0 if otherrice==.
-replace allrice=0 if allrice==.
-
-replace stricepercap=0 if stricepercap==.
-replace otricepercap=0 if otricepercap==.
-replace allricepercap=0 if allricepercap==.
+label    variable ricepercap "ave daily rice consumption per capita (in grams)"
 
 
 *natural logarithm transformation (ln); log transformation (log)*
-gen logstricepercap=log(stricepercap)
-gen logotricepercap=log(otricepercap)
-gen logallricepercap=log(allricepercap)
 
-label variable steamed "has steamed rice in meal plan"
-label variable otherrice "has other rice dish in meal plan"
-label variable allrice "has rice in meal plan"
+gen      logricepercap=log(ricepercap)
 
-label variable stricepercap "ave amount of steamed rice per capita per day"
-label variable otricepercap "ave amount of other rice dish per capita per day"
-label variable allricepercap "ave amount of rice dish per capita per day"
-
-label variable logstricepercap "ave amount of steamed rice per capita per day(log)"
-label variable logotricepercap "ave amount of other rice dish per capita per day (log)"
-label variable logallricepercap "ave amount of rice dish per capita per day (log)"
+label    variable ricepercap    "ave daily rice consumption per capita (in grams)"
+label    variable logricepercap "ave daily rice consumption per capita (in grams, log)"
 
 
 merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta"
 drop _merge
 
-save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\14analysis_ricecap.dta", replace
+***kdensity
+twoway kdensity ricepercap if round ==1 || kdensity ricepercap if round ==2 ||kdensity ricepercap if round ==3, ///
+                legend(order(1 "husband" 2 "wife" 3 "consensus"))
+				
+twoway kdensity logricepercap if round ==1 || kdensity logricepercap if round ==2 ||kdensity logricepercap if round ==3, ///
+                legend(order(1 "husband" 2 "wife" 3 "consensus"))
+				
+				
+save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\07analysis_ricecap.dta", replace
 
 
