@@ -1,182 +1,81 @@
-
-/*******INVESTMENT SHARE - total calories**********/
-
+/******* TOTAL CALORIES per capita**********/
 
 clear all
 
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\13b_analysis_kcal.dta", clear
+use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\09analysis_kcalcap.dta", clear
 
+**variable description
+describe  kcalcap       logkcalcap  ///
+		  weekends_both Morning       Kolkata                               ///
+          BCC1          BCC2          BCC3                                  ///
+		  T1            T2            T3                                    ///
+		  PBC_00        hunger_indiv  husband0     wife0                    ///
+	      highschool_h  highschool_w  agriocc_h    employed_w               ///
+		  inv_allw      ref           incpercap000                          ///
+		  source_hlabel source_wlabel hhsize       wchild     wseniors
 
-describe kcal lnkcal logkcal kcalpercap lnkcalpercap logkcalpercap
+**desc statistics
 sort round
-by round: summarize kcal lnkcal logkcal kcalpercap lnkcalpercap logkcalpercap
+by   round: summarize kcalcap       logkcalcap   ///
+					  weekends_both Morning       Kolkata                               ///
+					  BCC1          BCC2          BCC3                                  ///
+					  T1            T2            T3                                    ///
+					  PBC_00        hunger_indiv  husband0  wife0                       ///
+					  highschool_h  highschool_w  agriocc_h employed_w                  ///
+					  inv_allw      ref           incpercap000                          ///
+					  source_hlabel source_wlabel hhsize    wchild     wseniors
+					  
+******************************************************************************************
+*                           START OF ANALYSIS
+******************************************************************************************
 
-*********
-* kcal
-*********
+********************************************			  
+**  OLS:kcalcap  
+*result: non-normally distributed errors   *
+********************************************	
 
 clear all
 
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\13b_analysis_kcal.dta", clear
+use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\09analysis_kcalcap.dta", clear
+	  
+regress kcalcap    weekends_both Morning       Kolkata                               ///
+		BCC1          BCC2          BCC3                                  ///
+	    PBC_00        hunger_indiv  husband0  wife0                       ///
+		highschool_h  highschool_w  agriocc_h employed_w                  ///
+		inv_allw      ref           incpercap000                          ///
+		source_hlabel source_wlabel hhsize    wchild     wseniors, ///
+	    vce (cluster iresid) 
 
-regress kcal weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w work_hfull work_whousewife ///
-	 inv_allw  ref incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, ///
-	  vce (cluster iresid) 
-	 
-
-vif 
-/*mean VIF=1.75*/
-
-predict ykcal
+predict ykcalcap
 
 /*checking whether errors are normal*/
-gen e=kcal-ykcal
-swilk e
+gen     e=kcalcap-ykcalcap
+swilk   e
 
-
-*********
-* lnkcal
-*********
+******************************
+* logarithmic:logricepercap  *
+******************************
 
 clear all
 
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\13b_analysis_kcal.dta", clear
+use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\09analysis_kcalcap.dta", clear
+				  
+regress logkcalcap    weekends_both Morning       Kolkata                               ///
+		BCC1          BCC2          BCC3                                  ///
+	    PBC_00        hunger_indiv  husband0  wife0                       ///
+		highschool_h  highschool_w  agriocc_h employed_w                  ///
+		inv_allw      ref           incpercap000                          ///
+		source_hlabel source_wlabel hhsize    wchild     wseniors, ///
+	    vce (cluster iresid) 
 
-regress lnkcal weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w work_hfull work_whousewife ///
-	 inv_allw  ref incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, ///
-	  vce (cluster iresid) 
-	 
-
-vif 
-/*mean VIF=1.75*/
-
-predict ylnkcal
+predict ylogkcalcap
 
 /*checking whether errors are normal*/
-gen e=lnkcal-ylnkcal
-swilk e
-/*pvalue=0.43045*/
-
-*********
-* logkcal
-*********
-
-clear all
-
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\13b_analysis_kcal.dta", clear
-
-regress logkcal weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w work_hfull work_whousewife ///
-	 inv_allw  ref incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, ///
-	  vce (cluster iresid) 
-	 
-
-vif 
-/*mean VIF=1.75*/
-
-predict ykcal
-
-/*checking whether errors are normal*/
-gen e=kcal-ykcal
-swilk e
+gen     e2=logkcalcap-ylogkcalcap
+swilk   e2
 
 
-
-clear all
-
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\13b_analysis_kcal.dta", clear
-
-
-describe kcal lnkcal logkcal kcalpercap lnkcalpercap logkcalpercap
-sort round
-by round: summarize kcal lnkcal logkcal kcalpercap lnkcalpercap logkcalpercap
-
-*********
-* kcalpercap
-*********
-
-clear all
-
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\13b_analysis_kcal.dta", clear
-
-regress kcalpercap weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w work_hfull work_whousewife ///
-	 inv_allw  ref incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, ///
-	  vce (cluster iresid) 
-	 
-
-vif 
-/*mean VIF=1.75*/
-
-predict ykcalpercap
-
-/*checking whether errors are normal*/
-gen e=kcalpercap-ykcalpercap
-swilk e
-
-*********
-* lnkcalpercap
-*********
-
-clear all
-
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\13b_analysis_kcal.dta", clear
-
-regress lnkcalpercap weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w work_hfull work_whousewife ///
-	 inv_allw  ref incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, ///
-	  vce (cluster iresid) 
-	 
-
-vif 
-/*mean VIF=1.75*/
-
-predict ylnkcalpercap
-
-/*checking whether errors are normal*/
-gen e=lnkcalpercap-ylnkcalpercap
-swilk e
-
-
-
-
-*********
-* logkcalpercap
-*********
-
-clear all
-
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\13b_analysis_kcal.dta", clear
-
-regress logkcalpercap weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w work_hfull work_whousewife ///
-	 inv_allw  ref incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, ///
-	  vce (cluster iresid) 
-	 
-
-vif 
-/*mean VIF=1.75*/
-
-predict ylogkcalpercap
-
-/*checking whether errors are normal*/
-gen e=logkcalpercap-ylogkcalpercap
-swilk e
-
+********************END****************************
 
 
 
