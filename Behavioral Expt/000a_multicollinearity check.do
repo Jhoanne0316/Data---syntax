@@ -13,55 +13,111 @@ clear all
 use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta", clear
 
 describe weekends_both Morning Kolkata ///
-		 BCC1 BCC2 BCC3 T1 T2 T3 PBC_00 ///
-		 hunger_h hunger_w hunger_indiv hunger_ratio /// *hunger ratio is only included for IDMP models
+		 T1 T2 T3 PBC_00 ///
+		 hunger_indiv hunger_ratio /// *hunger ratio is only included for IDMP models
 		 husband0 wife0 /// *not included for IDMP models
 		 highschool_h highschool_w agriocc_h employed_w work_hfull work_whousewife ///
-		 inv_allw  ref incpercap000  ///
+		 inv_allw  ref incpercap000 wkbudgetpercap00 ///
 		 source_hlabel source_wlabel hhsize wchild wseniors
-		 
-		 
-		 
-*********** USING BCC *******************		 
-		  
-*BCC+hunger level +occupation (husband has full time occ&housewife)
-collin weekends_both Morning Kolkata ///
-		 BCC1 BCC2 BCC3 PBC_00 ///
-		 hunger_h hunger_w  ///
+sort round
+by round:summarize weekends_both Morning Kolkata ///
+		 T1 T2 T3 PBC_00 ///
+		 hunger_indiv hunger_ratio /// *hunger ratio is only included for IDMP models
 		 husband0 wife0 /// *not included for IDMP models
-		 highschool_h highschool_w work_hfull work_whousewife ///
-		 inv_allw  ref incpercap000  ///
-		 source_hlabel source_wlabel hhsize wchild wseniors, corr
+		 highschool_h highschool_w agriocc_h employed_w work_hfull work_whousewife ///
+		 inv_allw  ref incpercap000 wkbudgetpercap00 ///
+		 source_hlabel source_wlabel hhsize wchild wseniors 
 		 
-*BCC+hunger level +occupation (Husband is employed in Agriculture &Wife is employed)
+*********** USING T's *******************	
 
-collin weekends_both Morning Kolkata ///
-		 BCC1 BCC2 BCC3 PBC_00 ///
-		 hunger_h hunger_w  ///
+**use all
+
+collin   weekends_both Morning Kolkata ///
+		 T1 T2 T3 PBC_00 ///
+		 hunger_indiv  /// *hunger ratio is only included for IDMP models
+		 husband0 wife0 /// *not included for IDMP models
+		 highschool_h highschool_w agriocc_h employed_w ///
+		 inv_allw  ref incpercap000 wkbudgetpercap00 ///
+		 source_hlabel source_wlabel hhsize wchild wseniors , corr
+		 
+**removing incpercap000
+collin   weekends_both Morning Kolkata ///
+		 T1 T2 T3 PBC_00 ///
+		 hunger_indiv  /// *hunger ratio is only included for IDMP models
+		 husband0 wife0 /// *not included for IDMP models
+		 highschool_h highschool_w agriocc_h employed_w ///
+		 inv_allw  ref  wkbudgetpercap00 ///
+		 source_hlabel source_wlabel hhsize wchild wseniors , corr
+		 
+**removing PBC_00		 
+collin   weekends_both Morning Kolkata ///
+		 T1 T2 T3  ///
+		 hunger_indiv  /// *hunger ratio is only included for IDMP models
+		 husband0 wife0 /// *not included for IDMP models
+		 highschool_h highschool_w agriocc_h employed_w ///
+		 inv_allw  ref incpercap000 wkbudgetpercap00 ///
+		 source_hlabel source_wlabel hhsize wchild wseniors , corr
+		 
+
+**removing wkbudgetpercap			 
+collin   weekends_both Morning Kolkata ///
+		 T1 T2 T3 PBC_00 ///
+		 hunger_indiv  /// *hunger ratio is only included for IDMP models
 		 husband0 wife0 /// *not included for IDMP models
 		 highschool_h highschool_w agriocc_h employed_w ///
 		 inv_allw  ref incpercap000  ///
-		 source_hlabel source_wlabel hhsize wchild wseniors, corr
+		 source_hlabel source_wlabel hhsize wchild wseniors , corr
 		 
-*BCC+self-reported+occupation (husband has full time occ&housewife)
+*********** USING T's for IDMP models*******************		
 
-collin weekends_both Morning Kolkata ///
-		 BCC1 BCC2 BCC3 PBC_00 ///
-		 hunger_indiv  ///
-		 husband0 wife0 /// *not included for IDMP models
-		 highschool_h highschool_w work_hfull work_whousewife ///
-		 inv_allw  ref incpercap000  ///
-		 source_hlabel source_wlabel hhsize wchild wseniors, corr
+**use all
 
-*BCC+self-reported+occupation (Husband is employed in Agriculture &Wife is employed)	
-				
-collin weekends_both Morning Kolkata ///
-		 BCC1 BCC2 BCC3 PBC_00 ///
-		 hunger_indiv  ///
-		 husband0 wife0 /// *not included for IDMP models
+collin   weekends_both Morning Kolkata ///
+		 T1 T2 T3 PBC_00 ///
+		 hunger_ratio /// *hunger ratio is only included for IDMP models
+		 highschool_h highschool_w agriocc_h employed_w ///
+		 inv_allw  ref incpercap000 wkbudgetpercap00 ///
+		 source_hlabel source_wlabel hhsize wchild wseniors , corr
+
+**removing incpercap000
+collin   weekends_both Morning Kolkata ///
+		 T1 T2 T3 PBC_00 ///
+		 hunger_ratio /// *hunger ratio is only included for IDMP models
+		 highschool_h highschool_w agriocc_h employed_w ///
+		 inv_allw  ref wkbudgetpercap00 ///
+		 source_hlabel source_wlabel hhsize wchild wseniors , corr
+
+
+**removing PBC_00	
+collin   weekends_both Morning Kolkata ///
+		 T1 T2 T3  ///
+		 hunger_ratio /// *hunger ratio is only included for IDMP models
+		 highschool_h highschool_w agriocc_h employed_w ///
+		 inv_allw  ref incpercap000 wkbudgetpercap00 ///
+		 source_hlabel source_wlabel hhsize wchild wseniors , corr
+
+**removing wkbudgetpercap00
+collin   weekends_both Morning Kolkata ///
+		 T1 T2 T3 PBC_00 ///
+		 hunger_ratio /// *hunger ratio is only included for IDMP models
 		 highschool_h highschool_w agriocc_h employed_w ///
 		 inv_allw  ref incpercap000  ///
-		 source_hlabel source_wlabel hhsize wchild wseniors, corr
+		 source_hlabel source_wlabel hhsize wchild wseniors , corr
+
+
+
+
+	 
+		 
+		 
+		 
+*********** USING T's for IDMP models*******************		 
+collin   weekends_both Morning Kolkata ///
+		 T1 T2 T3 PBC_00 ///
+		 hunger_ratio  /// *hunger ratio is only included for IDMP models
+		 highschool_h highschool_w agriocc_h employed_w ///
+		 inv_allw  ref incpercap000 fbudgetpercap ///
+		 source_hlabel source_wlabel hhsize wchild wseniors , corr
 		 
 		 
 *********** USING TREATMENTS *******************
