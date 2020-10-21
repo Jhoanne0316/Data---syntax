@@ -225,6 +225,7 @@ replace T3=0 if T3==.
 **********************/*FOR BUDGET CONSTRAINT*/********************************
 *from 2018 consumer survey--"/4.3)/7*2" factor was added to adjust budget for two days
 *inflation factor=2.85031581297067
+*weeklypercapitabudget is the random budget assigned to households =
 
 gen     double actual_wkbudget=round(actual_monbudget/4.3,0.0001)
 
@@ -764,7 +765,7 @@ tab      low_inc Kolkata, col
 
 *generating 'actual_wkbudget' to 'per capita food budget'
 
-gen     double fbudgetpercap=round(actual_wkbudget/hhsize,0.0001)
+gen     double wkbudgetpercap00=round(actual_wkbudget/hhsize/100,0.0001)
 
 
 **********************VEGETARIAN********************************
@@ -923,7 +924,7 @@ label variable freq_riceconv "frequency of purchasing rice (days in a month)"
 
 label variable importance_healthnutri "Health and nutri benefits are very/extremely important"
 
-label variable fbudgetpercap "Weekly per capita food budget"
+label variable wkbudgetpercap00 "Weekly per capita food budget from Consumer survey 2018 ('00 INR)"
 
 
 **********
