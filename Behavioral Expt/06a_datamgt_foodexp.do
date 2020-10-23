@@ -73,12 +73,12 @@ drop _merge
 gen       double defbudget   =round(weeklypercapitabudget/2.85031581297067,0.0001)
 
 **computing totalbudget to be used as the denominator for computing the shares
-gen       double totalbudget =round(defbudget*hhsize,0.0001)
+gen       double totalbudget  =round(defbudget*hhsize,0.0001)
 gen       double unspentbudget=round(totalbudget-totalamountspent,0.0001)
 
-label     variable defbudget   "received weeklypercapitabudget for two days (adjusted to inflation)"
-label     variable totalbudget "received household budget for two days (adjusted to inflation)"
-label     variable unspentbudget   "total amount unspent in the budget"
+label     variable defbudget     "received weeklypercapitabudget for two days (adjusted to inflation)"
+label     variable totalbudget   "received household budget for two days (adjusted to inflation)"
+label     variable unspentbudget "total amount unspent in the budget"
 
 edit      uniqueID  totalamountspent unspentbudget totalbudget 
 *************************************************
@@ -94,21 +94,21 @@ summarize unspent if excess==1 /*44 obs*/
 /**to adjust excess spending from the app, the excessive budget was takes as 
    the randomized budget for the household */
    
-edit      uniqueID  totalamountspent unspentbudget totalbudget if excess==1
+edit      uniqueID  totalamountspent unspentbudget totalbudget excess if excess==1
 
 replace   totalbudget=totalamountspent if excess==1
 replace   unspentbudget=totalbudget-totalamountspent
-replace   excess=1 if unspentbudget<0
+replace   excess=0 if unspentbudget>=0
 *************************************************
 
 *generating variables for investment share among food group
-gen       long starch =0
-gen       long nonveg =0
-gen       long pulses =0
-gen       long dairy  =0
-gen       long veg    =0
-gen       long fruit  =0
-gen       long savings=0
+gen       double starch =0
+gen       double nonveg =0
+gen       double pulses =0
+gen       double dairy  =0
+gen       double veg    =0
+gen       double fruit  =0
+gen       double savings=0
 
 replace   starch  =round(amtspentperfoodgrp1/totalbudget,0.0001)
 replace   nonveg  =round(amtspentperfoodgrp2/totalbudget,0.0001)
@@ -120,37 +120,36 @@ replace   savings =round(unspentbudget      /totalbudget,0.0001)
 
 /*checking the sum if equal to 1.0 to secure smooth run of fmlogit*/
 
-gen       double  s0_totalamountspent=round(starch+ nonveg+ pulses+ dairy+ veg+ fruit+ savings,0.0001)
+gen       s0_total=starch+ nonveg+ pulses+ dairy+ veg+ fruit+ savings
 
-edit      starch- savings s0_totalamountspent
-sort      s0_totalamountspent
+edit      starch- savings s0_total
+sort      s0_total
+tab       s0_total
 
-gen       dum_s0_totalamountspent=3  if s0_totalamountspent>1.0001 & ///
-          s0_totalamountspent!=. /*subtract 0.0002 */
-replace   dum_s0_totalamountspent=2  if s0_totalamountspent>1  ///
-          & s0_totalamountspent <1.0002 &  s0_totalamountspent!=. 
-		  /*subtract 0.0001 */
-replace   dum_s0_totalamountspent=1  if s0_totalamountspent<1  ///
-          & s0_totalamountspent!=. /*add 0.0001*/
-replace   dum_s0_totalamountspent=-1 if s0_totalamountspent<1  ///
-          & s0_totalamountspent < 0.9999 /*add 0.0001*/
-replace   dum_s0_totalamountspent=0  if s0_totalamountspent==1  ///
-          & s0_totalamountspent!=. 
-tab       dum_s0_totalamountspent
+gen      dum_s0_total  =3 if s0_total>1   /*subtract 0.0001 */
+replace  dum_s0_total  =4 if s0_total>1.0002 /*subtract 0.0002 */
+replace  dum_s0_total  =2 if s0_total<.9999   /*add 0.0001 */
+replace  dum_s0_total  =1 if s0_total<=.99980003 /*add 0.0.00019997*/
+replace  dum_s0_total  =0 if s0_total==1
+tab      dum_s0_total
 
 
-*it is more logical to adjust the unspent budget to have an exact 1.0 sum of shares
-replace   savings        = savings-0.0002 if dum_s0_totalamountspent==3
-replace   savings        = savings-0.0001 if dum_s0_totalamountspent==2
-replace   savings        = savings+0.0001 if dum_s0_totalamountspent==1
-replace   savings        = savings+0.0002 if dum_s0_totalamountspent==-1
-replace   s0_totalamountspent=starch+ nonveg+ pulses+ dairy+ veg+ fruit+ savings
+*since 100% of the respondents have dinner, it is much easier to adjust the variable to have an exact 1.0 sum of shares
+sort      s0_kcal
 
-summarize s0_totalamountspent
+
+replace   starch       = starch-0.0002 if dum_s0_total==4
+replace   starch       = starch-0.0001 if dum_s0_total==3
+replace   starch       = starch+0.0001 if dum_s0_total==2
+replace   starch       = starch+0.0002 if dum_s0_total==1
+
+replace   s0_total=starch+ nonveg+ pulses+ dairy+ veg+ fruit+ savings
+
+summarize s0_total
 
 drop      amtspentperfoodgrp1 amtspentperfoodgrp2 amtspentperfoodgrp3 ///
           amtspentperfoodgrp4 amtspentperfoodgrp5 amtspentperfoodgrp6 ///
-		  totalamountspent  s0_totalamountspent dum_s0_totalamountspent ///
+		  totalamountspent  s0_total dum_s0_total ///
 		  excess unspentbudget
 
 ***labelling variable description*
@@ -202,5 +201,3 @@ twoway    kdensity starch || kdensity nonveg || kdensity pulses || kdensity dair
 				
 save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\06analysis_foodexp.dta", replace
 
-
-   
