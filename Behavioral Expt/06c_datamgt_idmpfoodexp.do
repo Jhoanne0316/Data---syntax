@@ -12,16 +12,16 @@ reshape wide starch nonveg pulses dairy veg fruit savings, i(iresid) j (round)
 merge   1:m iresid using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta"
 drop    _merge
 
-
 sort    iresid
 drop    if round!=1
 
-keep     iresid starch1 - savings3 ///
-         weekends_both Morning Kolkata ///
-         BCC1 BCC2 BCC3 T1 T2 T3 PBC_00 hunger_h hunger_w husband0 wife0 ///
-	     highschool_h highschool_w agriocc_h employed_w ///
-	     inv_allw  ref incpercap000  ///
-	     source_hlabel source_wlabel hhsize wchild wseniors
+keep     iresid starch1 - savings3                                     ///
+         weekends_both Morning       Kolkata                           ///
+		 T1            T2            T3                                ///
+	     PBC_00        hunger_ratio                                    ///
+		 highschool_h  highschool_w  agriocc_h    employed_w           ///
+		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		 source_hlabel source_wlabel hhsize       wchild     wseniors
 
 edit     iresid starch1 starch2 starch3
 		 
@@ -57,32 +57,6 @@ label    variable midmp_fexp "Men’s intrahousehold decision making power(foode
 label    variable widmp_fexp "Women’s intrahousehold decision making power(foodexp)"
 
 
-save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\06analysis_ihdmpfoodexp.dta", replace
+save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\06analysis_idmpfoodexp.dta", replace
 
 
-/*
-label variable starch1 "average investment share for Starch (husband)"
-label variable nonveg1 "average investment share for Non-vegetarian (husband)"
-label variable pulses1 "average investment share for Pulses (husband)"
-label variable dairy1 "average investment share for Dairy (husband)"
-label variable veg1 "average investment share for Vegetables (husband)"
-label variable fruit1 "average investment share for Fruit (husband)"
-label variable savings1 "average savings investment share (husband)"
-
-label variable starch2 "average investment share for Starch (wife)"
-label variable nonveg2 "average investment share for Non-vegetarian (wife)"
-label variable pulses2 "average investment share for Pulses (wife)"
-label variable dairy2 "average investment share for Dairy (wife)"
-label variable veg2 "average investment share for Vegetables (wife)"
-label variable fruit2 "average investment share for Fruit (wife)"
-label variable savings2 "average savings investment share (wife)"
-
-label variable starch3 "average investment share for Starch (joint)"
-label variable nonveg3 "average investment share for Non-vegetarian (joint)"
-label variable pulses3 "average investment share for Pulses (joint)"
-label variable dairy3 "average investment share for Dairy (joint)"
-label variable veg3 "average investment share for Vegetables (joint)"
-label variable fruit3 "average investment share for Fruit (joint)"
-label variable savings3 "average savings investment share (joint)"
-
-*/

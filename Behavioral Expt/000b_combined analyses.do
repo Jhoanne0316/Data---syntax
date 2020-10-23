@@ -5,57 +5,50 @@ clear all
 
 use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta", clear
 
-merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\08analysis_foodexp.dta"
+merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\06analysis_foodexp.dta"
 drop _merge
 
-merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\09analysis_kcal.dta"
+merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\07analysis_ricecap.dta"
 drop _merge
 
-merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\12analysis_HDDS.dta"
+merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\08analysis_hdds.dta"
 drop _merge
 
-merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\13b_analysis_kcalcap.dta"
+merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\09analysis_kcalcap.dta"
 drop _merge
 
-merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\14b_analysis_ricecap.dta"
+merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\10analysis_macronutri.dta"
 drop _merge
 
-merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\16analysis_kcalocc.dta"
+merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\11analysis_kcalocc.dta"
 drop _merge
 
 
 
-save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000_econ_models.dta", replace
-
-/*VIF*/
-
-collin weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w agriocc_h employed_w ///
-	 inv_allw  ref incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, corr
-
+save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000a_models.dta", replace
 
 *********
 * ECON MODELS
 *********
 clear all
 
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000_econ_models.dta", clear
+use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000a_models.dta", clear
 
 *************
 
 * allocated for WIDMP
 
 *************
-*Food Expenditure
-fmlogit savings starch nonveg pulses dairy veg fruit , ///
-	  eta(weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w agriocc_h employed_w ///
-	 inv_allw  ref incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors) cluster(iresid)
-		
+*06b_analysis_foodexp
+fmlogit savings starch nonveg pulses dairy veg fruit ,                  ///
+	  eta(weekends_both Morning       Kolkata                           ///
+		  T1            T2            T3                                ///
+	      PBC_00        hunger_indiv  husband0     wife0                ///
+		  highschool_h  highschool_w  agriocc_h    employed_w           ///
+		  inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		  source_hlabel source_wlabel hhsize       wchild     wseniors) ///
+		  cluster(iresid)
+	 
 eststo foodexp
 
 foreach o in  starch nonveg pulses dairy veg fruit savings {
@@ -67,80 +60,90 @@ eststo drop foodexp
 
 *************
 
-* allocated for Rice per capita
-regress logallricepercap weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w agriocc_h employed_w ///
-	 inv_allw  ref  incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, ///
-	  vce (cluster iresid) 
+* 07b_analysis_ricecap
+regress ricepercap    ///
+		weekends_both Morning       Kolkata                               ///
+		T1            T2            T3                                    ///
+		PBC_00        hunger_indiv  husband0  wife0                       ///
+		highschool_h  highschool_w  agriocc_h employed_w                  ///
+		inv_allw      ref           incpercap000    wkbudgetpercap00      ///
+		source_hlabel source_wlabel hhsize    wchild     wseniors, ///
+	    vce (cluster iresid) 
 	  
-eststo rice
+eststo ricecap
 
 *************
-*HDDS
-regress HDDS weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w agriocc_h employed_w ///
-	 inv_allw  ref  incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, ///
-	  vce (cluster iresid) 
+*08b_analysis_hdds
+regress HDDS              ///
+		weekends_both Morning       Kolkata                               ///
+		T1            T2            T3                                    ///
+		PBC_00        hunger_indiv  husband0  wife0                       ///
+		highschool_h  highschool_w  agriocc_h employed_w                  ///
+		inv_allw      ref           incpercap000    wkbudgetpercap00      ///
+		source_hlabel source_wlabel hhsize    wchild     wseniors, ///
+	    vce (cluster iresid) 
 	  
-eststo HDDS
+eststo hdds
 
 *************
-*calories per capita
-regress logkcalpercap weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w agriocc_h employed_w ///
-	 inv_allw  ref  incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, ///
-	  vce (cluster iresid) 
+*09b_analysis_kcalcap
 
-eststo Calpercap
+
+regress kcalcap                               ///
+		weekends_both Morning       Kolkata                               ///
+		T1            T2            T3                                    ///
+		PBC_00        hunger_indiv  husband0  wife0                       ///
+		highschool_h  highschool_w  agriocc_h employed_w                  ///
+		inv_allw      ref           incpercap000    wkbudgetpercap00      ///
+		source_hlabel source_wlabel hhsize    wchild     wseniors, ///
+	    vce (cluster iresid) 
+
+eststo kcalcap
 
 *************
-*Calorie distribution
-fmlogit  protein carb fat, ///
-	  eta(weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w agriocc_h employed_w ///
-	 inv_allw  ref  incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors) cluster(iresid)
-		
-eststo caldist
+*10b_analysis_macronutri
+fmlogit protein carb fat , ///
+	  eta(weekends_both Morning       Kolkata                           ///
+		  T1            T2            T3                                ///
+	      PBC_00        hunger_indiv  husband0     wife0                ///
+		  highschool_h  highschool_w  agriocc_h    employed_w           ///
+		  inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		  source_hlabel source_wlabel hhsize       wchild     wseniors) ///
+		  cluster(iresid)
+	 
+eststo macronutri
 
 foreach o in   carb  protein fat{
 margins, dydx(*) predict(outcome(`o')) post
 eststo, title(`o')
-estimates restore caldist
+estimates restore macronutri
 }
-eststo drop caldist
+eststo drop macronutri
+
 
 *************
-
-* allocated for Calorie distribution among occasions
-fmlogit s5_dinner s1_bfast s2_amsnacks s3_lunch s4_pmsnacks , ///
-	    eta(weekends_both Morning Kolkata ///
-        BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	    highschool_h highschool_w agriocc_h employed_w ///
-	    inv_allw  ref incpercap000  ///
-	    source_hlabel source_wlabel hhsize wchild wseniors) cluster(iresid)
+* 11b_analysis_kcalocc
+fmlogit   s5_dinner     s1_bfast      s2_amsnacks   s3_lunch   s4_pmsnacks, ///
+	  eta(weekends_both Morning       Kolkata                           ///
+		  T1            T2            T3                                ///
+	      PBC_00        hunger_indiv  husband0     wife0                ///
+		  highschool_h  highschool_w  agriocc_h    employed_w           ///
+		  inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		  source_hlabel source_wlabel hhsize       wchild     wseniors)     cluster(iresid)
 	 
 eststo kcalocc
 
 
-foreach o in  s1_bfast s2_amsnacks s3_lunch s4_pmsnacks s5_dinner {
+foreach o in  s1_bfast      s2_amsnacks   s3_lunch     s4_pmsnacks    s5_dinner {
 margins, dydx(*) predict(outcome(`o')) post
 eststo, title(`o')
 estimates restore kcalocc
 }
 eststo drop kcalocc
-
 *************
 
 
 /*esttab caldist calcap diet using C:\Users\jynion\Desktop\DFC_v1.rtf , title (Econometric results of the nudging experiment) mtitles ("Parameter estimate") label star(* 0.10 ** 0.05 *** 0.01) b(4) se(4) pr2(4) onecell nogaps unstack*/
-esttab using C:\Users\jynion\Desktop\DFC_results_09222020.rtf, mtitles title(Econometric results of the nudging experiment)label star(* 0.10 ** 0.05 *** 0.01) b(4) se(4) pr2(4) onecell nogaps
+esttab using C:\Users\jynion\Desktop\000a_modelsame.rtf, mtitles title(Econometric results of the nudging experiment)label star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) pr2(3) onecell nogaps
 
 

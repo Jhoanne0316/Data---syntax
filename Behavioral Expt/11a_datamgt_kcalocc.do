@@ -8,6 +8,26 @@ use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\
 
 keep    uniqueID session hh round day occasion dish quantity energytotal
 
+sort     uniqueID day occasion dish
+edit     uniqueID session hh round day occasion dish quantity energytotal
+
+***generating the total energy spent accounting the no. of serving (quantity)
+gen      double kcal=round(energytotal*quantity, 0.0001)
+
+***computing the energy spent per occasion per day for each respondent
+collapse (sum) kcal, by (uniqueID day occasion)
+
+collapse (mean) kcal, by (uniqueID occasion)
+
+collapse (sum) kcal, by (uniqueID)
+
+rename kcal kcaltotal
+
+save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\11analysis_kcalocc.dta", replace
+
+merge m:m uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_mergefile.dta"
+drop _merge
+*===================================
 /*label new variables*/
 
 gen     occ=1 if occasion=="Breakfast"
@@ -27,48 +47,47 @@ replace occasion="05Dinner" if occ==5
 
 
 sort     uniqueID day occasion dish
-edit     uniqueID session hh round day occasion dish quantity energytotal
+edit uniqueID day occasion occ dish quantity energytotal kcaltotal
 
 ***generating the total energy spent accounting the no. of serving (quantity)
 gen      double kcal=round(energytotal*quantity, 0.0001)
 
+
 ***computing the energy spent per occasion per day for each respondent
-collapse (sum) kcal (mean)occ, by (uniqueID day occasion)
+collapse (sum) kcal (mean) occ kcaltotal, by (uniqueID day occasion)
 
-		
-save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\11analysis_kcalocc.dta", replace
-
-***computing the energy spent per occasion for each respondent
-sort     uniqueID day occasion 
-collapse (sum) kcal (mean) occ, by (uniqueID day)
-rename kcal kcaltotal
+collapse (mean) kcal kcaltotal occ, by (uniqueID occasion)
 
 
-/***need to compute the average daily share of energy per occasion
+***computing the energy share per occasion per day for each respondent
+gen double kcalshare=round(kcal/kcaltotal,0.0001)
+
 
 ***reshaping the data to wide to create energy spent variable for each occasion
-drop     occasion
+*/
+drop     occasion kcal kcaltotal
+
+rename kcalshare kcal
+
 reshape  wide kcal, i(uniqueID) j (occ)
 
-foreach  v of varlist kcal1-kcal5 {
+
+foreach  v of varlist kcal1- kcal5{
          replace `v' =0 if `v'==.
           }
 
-*compute the total average energy shares among occasion
-gen      kcal=kcal1+ kcal2+ kcal3+ kcal4+ kcal5
+	  
+/***need to compute the average daily share of energy per occasion*/
+
 
 ***computing the energy shares  among occasions
-gen      long s1_bfast    =0
-gen      long s2_amsnacks =0
-gen      long s3_lunch    =0
-gen      long s4_pmsnacks =0
-gen      long s5_dinner   =0
+ 
+rename      kcal1 s1_bfast  
+rename      kcal2 s2_amsnacks 
+rename      kcal3 s3_lunch    
+rename      kcal4 s4_pmsnacks 
+rename      kcal5 s5_dinner   
 
-replace  s1_bfast         =round(kcal1/kcal,0.0001)
-replace  s2_amsnacks      =round(kcal2/kcal,0.0001)
-replace  s3_lunch         =round(kcal3/kcal,0.0001)
-replace  s4_pmsnacks      =round(kcal4/kcal,0.0001)
-replace  s5_dinner        =round(kcal5/kcal,0.0001)
 
 /*checking the sum if equal to 1.0 to secure smooth run of fmlogit*/
 
@@ -90,14 +109,14 @@ replace   s5_dinner       = s5_dinner+0.0001 if dum_s0_kcal==1
 replace   s0_kcal         = s1_bfast+s2_amsnacks+s3_lunch+s4_pmsnacks+s5_dinner
 summarize s0_kcal
 
-drop kcal1 kcal2 kcal3 kcal4 kcal5 kcal  s0_kcal dum_s0_kcal
+drop s0_kcal dum_s0_kcal
 
 ***labelling the variables
-label     variable s1_bfast    "ave daily share of calories during for Breakfast"
-label     variable s2_amsnacks "kcal share for AM Snacks"
-label     variable s3_lunch    "kcal share for Lunch"
-label     variable s4_pmsnacks "kcal share for PM Snacks"
-label     variable s5_dinner   "kcal share for Dinner"
+label     variable s1_bfast    "ave daily share of calories during Breakfast"
+label     variable s2_amsnacks "ave daily share of calories during AM Snacks"
+label     variable s3_lunch    "ave daily share of calories during Lunch"
+label     variable s4_pmsnacks "ave daily share of calories during PM Snacks"
+label     variable s5_dinner   "ave daily share of calories during Dinner"
 
 merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta"
 drop _merge
@@ -122,7 +141,7 @@ twoway kdensity s1_bfast || kdensity s2_amsnacks || kdensity s3_lunch || kdensit
                 legend(order(1 "Breakfast" 2 "AM Snacks" 3 "Lunch" 4 "PM Snacks" 5 "Dinner"))
 
 				
-save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\16analysis_kcalocc.dta", replace
+save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\11analysis_kcalocc.dta", replace
 
 
    

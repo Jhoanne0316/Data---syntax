@@ -21,14 +21,12 @@ keep uniqueID session hh round ///
 	 AS1_h AS1_w AS2_h AS2_w ///                                     /* (2) INDIVIDUAL - Accompanying Sheet for AGENT*/
 	 D2_h D2_w D3_h D3_w D4_h D4_w D5_h D5_w D6_h D6_w I1_h  I1_w ///          /*(3) INDIVIDUAL – Questionnaire for ENUMERATOR*/ /*addedd D6-employment*/
 	 M1_h M1_w M3_h M3_w S1_h S1_w ///
-	 District s06_urba s06_rura s07 s3q1 s3q2a s3q2b s3q2c s3q2d s3q2e s3q2f s3q3d /// /*2018 Consumer Survey*/ /*addedd s6q7-househelp*/
-	 s3q4_1 s3q4_2 s3q4_3 s3q4_4 s3q4_5 s3q4_6_o /// 
-	 s3q5_01 s3q5_02 s3q5_03 s3q5_04 s3q5_05 s3q5_06 ///
+	 District s06_urba s06_rura s07 s3q1 s3q2a s3q2e s3q2f  /// /*2018 Consumer Survey*/ /*added s6q7-househelp*/
 	 s4q1_06 s4q1_07 s6q3 s6q6 s6q7 q1a_06 s6q18_to
 
 /**************DATA MANAGEMENT OF INDEPENDENT VARIABLES******************/
 
-destring s3q1 s3q2b s3q2c s3q2d s3q4_1 s3q4_2 s3q4_3 s3q4_4 s3q4_5 s3q4_6_o, replace
+destring s3q1 , replace
 
 **LABEL VARIABLE OF EXISTING VARIABLES
 
@@ -79,22 +77,7 @@ label variable s06_urba "monthly hh income reported from 2018 consumer survey - 
 label variable s06_rura "monthly hh income reported from 2018 consumer survey - rural"
 label variable s07 "low income group reported from 2018 consumer survey"
 label variable s3q1 "Vegetarian household"
-label variable s3q2b "Store type where food product is purchased - Vegetable"
-label variable s3q2c "Store type where food product is purchased - Fruits"
-label variable s3q2d "Store type where food product is purchased - Rice"
-label variable s3q3d "frequency of purchasing rice"
-label variable s3q4_1 "Store buy any product - Weekly market"
-label variable s3q4_2 "Store buy any product - Local Grocery store"
-label variable s3q4_3 "Store buy any product - Super markets"
-label variable s3q4_4 "Store buy any product - Hyper markets"
-label variable s3q4_5 "Store buy any product - Online store/shop"
-label variable s3q4_6_o "Store buy any product - Others"
-label variable s3q5_01 "Distance - Weekly market"
-label variable s3q5_02 "Distance - Local Grocery store"
-label variable s3q5_03 "Distance - Super markets"
-label variable s3q5_04 "Distance - Hyper markets"
-label variable s3q5_05 "Distance - Online store/shop"
-label variable s3q5_06 "Distance - Others"
+
 label variable s4q1_06 "The food product is traditionally consumed because of its health benefits"
 label variable s4q1_07 "The food product has high nutrient content."
 label variable s6q3 "belong to a Schedule Caste or Schedule Tribe"
@@ -141,22 +124,6 @@ rename S1_w source_w
 /*2018 Consumer Survey*/
 rename s07 low_inc
 rename s3q1 vegetarian
-rename s3q2b store_veg
-rename s3q2c store_fruit
-rename s3q2d store_rice
-rename s3q3d freq_rice
-rename s3q4_1 store_wkmarket
-rename s3q4_2 store_grocery
-rename s3q4_3 store_supermarket
-rename s3q4_4 store_hypermarket
-rename s3q4_5 store_online
-rename s3q4_6_o store_others
-rename s3q5_01 dis_wkmarket
-rename s3q5_02 dis_grocery
-rename s3q5_03 dis_supermarket
-rename s3q5_04 dis_hypermarket
-rename s3q5_05 dis_online
-rename s3q5_06 dis_others
 rename s4q1_06 importance_health
 rename s4q1_07 importance_nutricontent
 rename s6q3 caste
@@ -172,9 +139,6 @@ label define impt 1 "Not at all important" 2 "Of little importance" 3 "Neutral" 
 label define cons 1 "constrained" 0 "unconstrained"
 
 label define involve 1 "do all majority" 2 "frequent" 3 "someone else and mainly supervise" 4 "never or hardly"
-
-label define freq 1 "Everyday" 2 "4–6 times per week" 3 "2–3 times per week" 4 "Once a week" 5 "2–3 times per month" ///
-                  6 "Once a month" 7 "Every other month/six times a year" 8 "Less frequent than every other month"
 
 label define rel 1 "Hindu" 0 "Others"
  
@@ -192,6 +156,7 @@ label define educ 0 "No Formal Schooling" 1 "Primary School" 2 "Junior Secondary
 label define trmt 1 "T1:ingredient" 2 "T2:ingredient+dish" 3 "T3:ingredient+dish+occasion" 4 "otherwise"
 
 label define yesno 1 "yes" 0 "no" 
+
 label define yes 1 "yes" 0 "otherwise" 
 
 label define work 1 "Full Time(>30hrs a wk)" 2 " Part Time (15-30hrs a wk)" ///
@@ -206,15 +171,12 @@ label define occupation 1 "Education" 2 "Government" 3 "Agriculture, forestry, f
 					  
 label define district 6 "Kolkata" 7 "South Twenty Four Parganas" 8 "Bankura" 9 "Murshidabad" 10 "Jalpaiguri" 11 "Paschim Medinipur" ///
 					  12 "Hugli" 13 "Uttar Dinajpur" 14 "Koch Bihar"
-					  
-label define store 1 "Weekly market" 2 "Local Grocery store" 3 "Supermarkets" 4 "Hypermarkets" 5 "Online store/shop" 6 "Others" 97 "Refused" 99 "Don't know"
-
 					
 * Attach the value label to the variable *
 
 label values importance_health importance_nutricontent impt
 label values involve_h involve_w involve 
-label values freq_rice freq
+
 label values rel_h rel_w rel
 label values round rnd
 label values low_inc lowincome
@@ -225,7 +187,7 @@ label values enough_h enough_w org_h org_w train_h train_w vegetarian caste ref 
 label values work_h work_w work
 label values pocc_h pocc_w occ occupation
 label values District district
-label values store_veg store_fruit store_rice s3q2a s3q2e s3q2f store
+
 
 *******************************************************************************
 *                              REQUIIRED VARIABLES                            *
@@ -263,14 +225,15 @@ replace T3=0 if T3==.
 **********************/*FOR BUDGET CONSTRAINT*/********************************
 *from 2018 consumer survey--"/4.3)/7*2" factor was added to adjust budget for two days
 *inflation factor=2.85031581297067
+*weeklypercapitabudget is the random budget assigned to households =
 
-gen     double actual_2daybudget= round(((actual_monbudget/4.3)/7)*2, 0.0001)
+gen     double actual_wkbudget=round(actual_monbudget/4.3,0.0001)
+
+gen     double actual_2daybudget= round((actual_wkbudget/7)*2, 0.0001)
 
 gen     double act_2daypercapbudget= round(actual_2daybudget/hhsize, 0.0001)
 
 gen     double giv_2daypercapbudget= round(weeklypercapitabudget/2.85031581297067,0.0001)
-
-gen     double actual_wkbudget=round(actual_monbudget/4.3,0.0001)
 
 gen     double given_wkbudget=round((((weeklypercapitabudget/2.85031581297067)*hhsize)/2)*7,0.0001)
 
@@ -800,6 +763,11 @@ summarize income000 incpercap000
 tab      low_inc
 tab      low_inc Kolkata, col
 
+*generating 'actual_wkbudget' to 'per capita food budget'
+
+gen     double wkbudgetpercap00=round(actual_wkbudget/hhsize/100,0.0001)
+
+
 **********************VEGETARIAN********************************
 
 replace  vegetarian=0 if vegetarian==2
@@ -807,98 +775,6 @@ tab      vegetarian
 
 **vegetarian=6%; assessment: exclude in the model
 
-**********************STORE_prod********************************
-tab      store_veg
-replace  store_veg=6 if store_veg==7
-replace  store_veg=. if store_veg==96|store_veg==99
-
-tab      store_fruit
-
-tab      store_rice
-replace  store_rice=6 if store_rice==7
-replace  store_rice=. if store_rice==96|store_rice==97|store_rice==99
-tab      store_rice
-
-gen      wkmarket=1 if s3q2a==1| store_veg==1| store_fruit==1| store_rice==1| s3q2e==1| s3q2f==1
-replace  wkmarket=0 if wkmarket==.
-tab      wkmarket
-
-gen      grocery=2 if s3q2a==2| store_veg==2| store_fruit==2| store_rice==2| s3q2e==2| s3q2f==2
-replace  grocery=0 if grocery==.
-tab      grocery
-replace  grocery=1 if grocery==2
-
-gen      supermarket=3 if s3q2a==3| store_veg==3| store_fruit==3| store_rice==3| s3q2e==3| s3q2f==3
-replace  supermarket=0 if supermarket==.
-tab      supermarket
-replace  supermarket=1 if supermarket==3
-
-gen      hypermarket=4 if s3q2a==4| store_veg==4| store_fruit==4| store_rice==4| s3q2e==4| s3q2f==4
-replace  hypermarket=0 if hypermarket==.
-tab      hypermarket
-replace  hypermarket=1 if hypermarket==4
-
-gen      online=5 if s3q2a==5| store_veg==5| store_fruit==5| store_rice==5| s3q2e==5| s3q2f==5
-replace  online=0 if online==.
-tab      online
-replace  online=1 if online==5
-
-gen      otherstore=6 if s3q2a==6| store_veg==6| store_fruit==6| store_rice==6| s3q2e==6| s3q2f==6| ///
-         s3q2a==7| store_veg==7| store_fruit==7| store_rice==7| s3q2e==7| s3q2f==7
-replace  otherstore=0 if otherstore==.
-tab      otherstore
-replace  otherstore=1 if otherstore==6
-	
-tab	     s3q2a
-tab	     store_veg
-tab	     store_fruit
-tab	     store_rice
-tab	     s3q2e
-tab      s3q2f
-tab	     store_wkmarket
-tab	     store_grocery
-tab	     store_supermarket
-tab	     store_hypermarket
-tab	     store_online
-tab	     store_others
-
-/*
-There is discrepancies in the consumer survey and generated variables. 
-Consumer survey was not able to capture the stores where food products are purchased.
-it is not advisable to use the  store variables (s3q4_1 to s3q4_6_o) and 
-distance variables (s3q5_01 to s3q5_06)
-*/
-gen      wkmarket_veg=1 if store_veg==1
-replace  wkmarket_veg=0 if wkmarket_veg==.
-tab      wkmarket_veg
-
-gen      wkmarket_fruit=1 if store_fruit==1
-replace  wkmarket_fruit=0 if wkmarket_fruit==.
-tab      wkmarket_fruit
-
-gen      wkmarket_rice=1 if store_rice==1
-replace  wkmarket_rice=0 if wkmarket_rice==.
-tab      wkmarket_rice
-
-gen      grocery_rice=1 if store_rice==2
-replace  grocery_rice=0 if grocery_rice==.
-tab      grocery_rice
-
-
-**********************STORE********************************
-/*STORE_MODERN is not mutually exclusive with other stores*/
-gen      store_modern=1 if supermarket==1| hypermarket==1 |online==1
-replace  store_modern=0 if store_modern==.
-tab      store_modern
-
-/*buy products in modern stores only*/
-gen      store_modernonly=1 if wkmarket==0& grocery==0& store_modern==1
-replace  store_modernonly=0 if store_modernonly==.
-tab      store_modernonly
-
-gen      store_tradonly=1 if  store_modern==0 & store_others==.
-replace  store_tradonly=0 if store_tradonly==.
-tab      store_tradonly
 
 **********************FREQUENCY OF RICE********************************
 gen      freq_riceconv=.
@@ -912,466 +788,6 @@ replace  freq_riceconv=0.5 if freq_rice==7  /*Every other month/six times a year
 replace  freq_riceconv=0.25 if freq_rice==8 /*Less frequent than every other month*/
 tab      freq_riceconv freq_rice
 
-**********************DISTANCE**********************
-**weekly market
-replace dis_wkmarket="500"   if dis_wkmarket=="0.5 KM"
-replace dis_wkmarket="500"   if dis_wkmarket=="0.5 kM"
-replace dis_wkmarket="500"   if dis_wkmarket=="0.5 KM"
-replace dis_wkmarket="500"   if dis_wkmarket=="1/2 KM"
-replace dis_wkmarket="500"   if dis_wkmarket=="1/2 KM"
-replace dis_wkmarket="500"   if dis_wkmarket=="1/2 KM"
-replace dis_wkmarket="1000"  if dis_wkmarket=="1 KM"
-replace dis_wkmarket="2000"  if dis_wkmarket=="2  KM"
-replace dis_wkmarket="2000"  if dis_wkmarket=="2 KM"
-replace dis_wkmarket="2000"  if dis_wkmarket=="2 kM"
-replace dis_wkmarket="2000"  if dis_wkmarket=="2 KM"
-replace dis_wkmarket="2000"  if dis_wkmarket=="2 KM"
-replace dis_wkmarket="2000"  if dis_wkmarket=="2 kM"
-replace dis_wkmarket="2000"  if dis_wkmarket=="2 KM"
-replace dis_wkmarket="2500"  if dis_wkmarket=="2.5KM"
-replace dis_wkmarket="3000"  if dis_wkmarket=="3 KM"
-replace dis_wkmarket="3000"  if dis_wkmarket=="3 KM"
-replace dis_wkmarket="3000"  if dis_wkmarket=="3 KM"
-replace dis_wkmarket="4000"  if dis_wkmarket=="4 KM"
-replace dis_wkmarket="4000"  if dis_wkmarket=="4 km"
-replace dis_wkmarket="5000"  if dis_wkmarket=="5  KM"
-replace dis_wkmarket="5000"  if dis_wkmarket=="5 KM"
-replace dis_wkmarket="10000" if dis_wkmarket=="10  km"
-replace dis_wkmarket="10000" if dis_wkmarket=="10 KM"
-replace dis_wkmarket="10000" if dis_wkmarket=="10 KM"
-replace dis_wkmarket="10000" if dis_wkmarket=="10 KM"
-replace dis_wkmarket="12000" if dis_wkmarket=="12 KM"
-replace dis_wkmarket="15000" if dis_wkmarket=="15 KM"
-replace dis_wkmarket="15000" if dis_wkmarket=="15 KM."
-replace dis_wkmarket="20000" if dis_wkmarket=="20 KM"
-replace dis_wkmarket="20000" if dis_wkmarket=="20 KM"
-replace dis_wkmarket="30000" if dis_wkmarket=="30 KM"
-replace dis_wkmarket="30000" if dis_wkmarket=="30 KM"
-replace dis_wkmarket="50000" if dis_wkmarket=="50 KM"
-replace dis_wkmarket="0.5"   if dis_wkmarket=="0.5 Meter"
-replace dis_wkmarket="1"     if dis_wkmarket=="1   Meter"
-replace dis_wkmarket="1"     if dis_wkmarket=="1   Meter"
-replace dis_wkmarket="1"     if dis_wkmarket=="1  Meter"
-replace dis_wkmarket="1"     if dis_wkmarket=="1 Meter"
-replace dis_wkmarket="2"     if dis_wkmarket=="2  Meter"
-replace dis_wkmarket="2"     if dis_wkmarket=="2  Meter"
-replace dis_wkmarket="2"     if dis_wkmarket=="2 Meter"
-replace dis_wkmarket="2"     if dis_wkmarket=="2 meter"
-replace dis_wkmarket="3"     if dis_wkmarket=="3  Meter"
-replace dis_wkmarket="3"     if dis_wkmarket=="3  Meter"
-replace dis_wkmarket="5"     if dis_wkmarket=="5 M"
-replace dis_wkmarket="5"     if dis_wkmarket=="5  Meter"
-replace dis_wkmarket="5"     if dis_wkmarket=="5  Meter"
-replace dis_wkmarket="5"     if dis_wkmarket=="5  Meter"
-replace dis_wkmarket="5"     if dis_wkmarket=="5 Meter"
-replace dis_wkmarket="5"     if dis_wkmarket=="5 Meter"
-replace dis_wkmarket="7"     if dis_wkmarket=="7  Meter"
-replace dis_wkmarket="8"     if dis_wkmarket=="8  Meter"
-replace dis_wkmarket="10"    if dis_wkmarket=="10   Meter"
-replace dis_wkmarket="10"    if dis_wkmarket=="10  Meter"
-replace dis_wkmarket="10"    if dis_wkmarket=="10  Meter"
-replace dis_wkmarket="10"    if dis_wkmarket=="10 Meter"
-replace dis_wkmarket="10"    if dis_wkmarket=="10 Meter"
-replace dis_wkmarket="10"    if dis_wkmarket=="10 Meter"
-replace dis_wkmarket="10"    if dis_wkmarket=="10 Meter"
-replace dis_wkmarket="10"    if dis_wkmarket=="10 Meter"
-replace dis_wkmarket="12"    if dis_wkmarket=="12 Meter"
-replace dis_wkmarket="15"    if dis_wkmarket=="15  Meter"
-replace dis_wkmarket="15"    if dis_wkmarket=="15 Meter"
-replace dis_wkmarket="15"    if dis_wkmarket=="15 Meter"
-replace dis_wkmarket="20"    if dis_wkmarket=="20  Meter"
-replace dis_wkmarket="20"    if dis_wkmarket=="20 Meter"
-replace dis_wkmarket="30"    if dis_wkmarket=="30 Meter"
-replace dis_wkmarket="30"    if dis_wkmarket=="30 Meter"
-replace dis_wkmarket="50"    if dis_wkmarket=="50  Meter"
-replace dis_wkmarket="50"    if dis_wkmarket=="50  Meter"
-replace dis_wkmarket="50"    if dis_wkmarket=="50 Meter"
-replace dis_wkmarket="50"    if dis_wkmarket=="50 Meter"
-replace dis_wkmarket="70"    if dis_wkmarket=="70  Meter"
-replace dis_wkmarket="80"    if dis_wkmarket=="80 Meter"
-replace dis_wkmarket="100"   if dis_wkmarket=="100  Meter"
-replace dis_wkmarket="100"   if dis_wkmarket=="100 Meter"
-replace dis_wkmarket="200"   if dis_wkmarket=="200   Mete"
-replace dis_wkmarket="200"   if dis_wkmarket=="200  Meter"
-replace dis_wkmarket="200"   if dis_wkmarket=="200  Meter"
-replace dis_wkmarket="200"   if dis_wkmarket=="200 Meter"
-replace dis_wkmarket="300"   if dis_wkmarket=="300 Meter"
-replace dis_wkmarket="300"   if dis_wkmarket=="300 Meter"
-replace dis_wkmarket="300"   if dis_wkmarket=="300 Meter"
-replace dis_wkmarket="500"   if dis_wkmarket=="500  Meter"
-replace dis_wkmarket="500"   if dis_wkmarket=="500 Meter"
-replace dis_wkmarket="500"   if dis_wkmarket=="500 Meter"
-
-**grocery
-replace dis_grocery="500"    if dis_grocery=="0.5 KM"
-replace dis_grocery="500"    if dis_grocery=="0.5 kM"
-replace dis_grocery="500"    if dis_grocery=="0.5 KM"
-replace dis_grocery="500"    if dis_grocery=="1/2 KM"
-replace dis_grocery="500"    if dis_grocery=="1/2 KM"
-replace dis_grocery="500"    if dis_grocery=="1/2 KM"
-replace dis_grocery="1000"   if dis_grocery=="1 KM"
-replace dis_grocery="2000"   if dis_grocery=="2  KM"
-replace dis_grocery="2000"   if dis_grocery=="2 KM"
-replace dis_grocery="2000"   if dis_grocery=="2 kM"
-replace dis_grocery="2000"   if dis_grocery=="2 KM"
-replace dis_grocery="2000"   if dis_grocery=="2 KM"
-replace dis_grocery="2000"   if dis_grocery=="2 kM"
-replace dis_grocery="2000"   if dis_grocery=="2 KM"
-replace dis_grocery="2500"   if dis_grocery=="2.5KM"
-replace dis_grocery="3000"   if dis_grocery=="3 KM"
-replace dis_grocery="3000"   if dis_grocery=="3 KM"
-replace dis_grocery="3000"   if dis_grocery=="3 KM"
-replace dis_grocery="4000"   if dis_grocery=="4 KM"
-replace dis_grocery="4000"   if dis_grocery=="4 km"
-replace dis_grocery="5000"   if dis_grocery=="5  KM"
-replace dis_grocery="5000"   if dis_grocery=="5 KM"
-replace dis_grocery="10000"  if dis_grocery=="10  km"
-replace dis_grocery="10000"  if dis_grocery=="10 KM"
-replace dis_grocery="10000"  if dis_grocery=="10 KM"
-replace dis_grocery="10000"  if dis_grocery=="10 KM"
-replace dis_grocery="12000"  if dis_grocery=="12 KM"
-replace dis_grocery="15000"  if dis_grocery=="15 KM"
-replace dis_grocery="15000"  if dis_grocery=="15 KM."
-replace dis_grocery="20000"  if dis_grocery=="20 KM"
-replace dis_grocery="20000"  if dis_grocery=="20 KM"
-replace dis_grocery="30000"  if dis_grocery=="30 KM"
-replace dis_grocery="30000"  if dis_grocery=="30 KM"
-replace dis_grocery="50000"  if dis_grocery=="50 KM"
-replace dis_grocery="0.5"    if dis_grocery=="0.5 Meter"
-replace dis_grocery="1"      if dis_grocery=="1   Meter"
-replace dis_grocery="1"      if dis_grocery=="1   Meter"
-replace dis_grocery="1"      if dis_grocery=="1  Meter"
-replace dis_grocery="1"      if dis_grocery=="1 Meter"
-replace dis_grocery="2"      if dis_grocery=="2  Meter"
-replace dis_grocery="2"      if dis_grocery=="2  Meter"
-replace dis_grocery="2"      if dis_grocery=="2 Meter"
-replace dis_grocery="2"      if dis_grocery=="2 meter"
-replace dis_grocery="3"      if dis_grocery=="3  Meter"
-replace dis_grocery="3"      if dis_grocery=="3  Meter"
-replace dis_grocery="5"      if dis_grocery=="5 M"
-replace dis_grocery="5"      if dis_grocery=="5  Meter"
-replace dis_grocery="5"      if dis_grocery=="5  Meter"
-replace dis_grocery="5"      if dis_grocery=="5  Meter"
-replace dis_grocery="5"      if dis_grocery=="5 Meter"
-replace dis_grocery="5"      if dis_grocery=="5 Meter"
-replace dis_grocery="7"      if dis_grocery=="7  Meter"
-replace dis_grocery="8"      if dis_grocery=="8  Meter"
-replace dis_grocery="10"     if dis_grocery=="10   Meter"
-replace dis_grocery="10"     if dis_grocery=="10  Meter"
-replace dis_grocery="10"     if dis_grocery=="10  Meter"
-replace dis_grocery="10"     if dis_grocery=="10 Meter"
-replace dis_grocery="10"     if dis_grocery=="10 Meter"
-replace dis_grocery="10"     if dis_grocery=="10 Meter"
-replace dis_grocery="10"     if dis_grocery=="10 Meter"
-replace dis_grocery="10"     if dis_grocery=="10 Meter"
-replace dis_grocery="12"     if dis_grocery=="12 Meter"
-replace dis_grocery="15"     if dis_grocery=="15  Meter"
-replace dis_grocery="15"     if dis_grocery=="15 Meter"
-replace dis_grocery="15"     if dis_grocery=="15 Meter"
-replace dis_grocery="20"     if dis_grocery=="20  Meter"
-replace dis_grocery="20"     if dis_grocery=="20 Meter"
-replace dis_grocery="30"     if dis_grocery=="30 Meter"
-replace dis_grocery="30"     if dis_grocery=="30 Meter"
-replace dis_grocery="50"     if dis_grocery=="50  Meter"
-replace dis_grocery="50"     if dis_grocery=="50  Meter"
-replace dis_grocery="50"     if dis_grocery=="50 Meter"
-replace dis_grocery="50"     if dis_grocery=="50 Meter"
-replace dis_grocery="70"     if dis_grocery=="70  Meter"
-replace dis_grocery="80"     if dis_grocery=="80 Meter"
-replace dis_grocery="100"    if dis_grocery=="100  Meter"
-replace dis_grocery="100"    if dis_grocery=="100 Meter"
-replace dis_grocery="200"    if dis_grocery=="200   Mete"
-replace dis_grocery="200"    if dis_grocery=="200  Meter"
-replace dis_grocery="200"    if dis_grocery=="200  Meter"
-replace dis_grocery="200"    if dis_grocery=="200 Meter"
-replace dis_grocery="300"    if dis_grocery=="300 Meter"
-replace dis_grocery="300"    if dis_grocery=="300 Meter"
-replace dis_grocery="300"    if dis_grocery=="300 Meter"
-replace dis_grocery="500"    if dis_grocery=="500  Meter"
-replace dis_grocery="500"    if dis_grocery=="500 Meter"
-replace dis_grocery="500"    if dis_grocery=="500 Meter"
-
-*supermarket
-replace dis_supermarket="500" if dis_supermarket=="0.5 KM"
-replace dis_supermarket="500" if dis_supermarket=="0.5 kM"
-replace dis_supermarket="500" if dis_supermarket=="0.5 KM"
-replace dis_supermarket="500" if dis_supermarket=="1/2 KM"
-replace dis_supermarket="500" if dis_supermarket=="1/2 KM"
-replace dis_supermarket="500" if dis_supermarket=="1/2 KM"
-replace dis_supermarket="1000" if dis_supermarket=="1 KM"
-replace dis_supermarket="2000" if dis_supermarket=="2  KM"
-replace dis_supermarket="2000" if dis_supermarket=="2 KM"
-replace dis_supermarket="2000" if dis_supermarket=="2 kM"
-replace dis_supermarket="2000" if dis_supermarket=="2 KM"
-replace dis_supermarket="2000" if dis_supermarket=="2 KM"
-replace dis_supermarket="2000" if dis_supermarket=="2 kM"
-replace dis_supermarket="2000" if dis_supermarket=="2 KM"
-replace dis_supermarket="2500" if dis_supermarket=="2.5KM"
-replace dis_supermarket="3000" if dis_supermarket=="3 KM"
-replace dis_supermarket="3000" if dis_supermarket=="3 KM"
-replace dis_supermarket="3000" if dis_supermarket=="3 KM"
-replace dis_supermarket="4000" if dis_supermarket=="4 KM"
-replace dis_supermarket="4000" if dis_supermarket=="4 km"
-replace dis_supermarket="5000" if dis_supermarket=="5  KM"
-replace dis_supermarket="5000" if dis_supermarket=="5 KM"
-replace dis_supermarket="10000" if dis_supermarket=="10  km"
-replace dis_supermarket="10000" if dis_supermarket=="10 KM"
-replace dis_supermarket="10000" if dis_supermarket=="10 KM"
-replace dis_supermarket="10000" if dis_supermarket=="10 KM"
-replace dis_supermarket="12000" if dis_supermarket=="12 KM"
-replace dis_supermarket="15000" if dis_supermarket=="15 KM"
-replace dis_supermarket="15000" if dis_supermarket=="15 KM."
-replace dis_supermarket="20000" if dis_supermarket=="20 KM"
-replace dis_supermarket="20000" if dis_supermarket=="20 KM"
-replace dis_supermarket="30000" if dis_supermarket=="30 KM"
-replace dis_supermarket="30000" if dis_supermarket=="30 KM"
-replace dis_supermarket="50000" if dis_supermarket=="50 KM"
-replace dis_supermarket="0.5" if dis_supermarket=="0.5 Meter"
-replace dis_supermarket="1" if dis_supermarket=="1   Meter"
-replace dis_supermarket="1" if dis_supermarket=="1   Meter"
-replace dis_supermarket="1" if dis_supermarket=="1  Meter"
-replace dis_supermarket="1" if dis_supermarket=="1 Meter"
-replace dis_supermarket="2" if dis_supermarket=="2  Meter"
-replace dis_supermarket="2" if dis_supermarket=="2  Meter"
-replace dis_supermarket="2" if dis_supermarket=="2 Meter"
-replace dis_supermarket="2" if dis_supermarket=="2 meter"
-replace dis_supermarket="3" if dis_supermarket=="3  Meter"
-replace dis_supermarket="3" if dis_supermarket=="3  Meter"
-replace dis_supermarket="5" if dis_supermarket=="5 M"
-replace dis_supermarket="5" if dis_supermarket=="5  Meter"
-replace dis_supermarket="5" if dis_supermarket=="5  Meter"
-replace dis_supermarket="5" if dis_supermarket=="5  Meter"
-replace dis_supermarket="5" if dis_supermarket=="5 Meter"
-replace dis_supermarket="5" if dis_supermarket=="5 Meter"
-replace dis_supermarket="7" if dis_supermarket=="7  Meter"
-replace dis_supermarket="8" if dis_supermarket=="8  Meter"
-replace dis_supermarket="10" if dis_supermarket=="10   Meter"
-replace dis_supermarket="10" if dis_supermarket=="10  Meter"
-replace dis_supermarket="10" if dis_supermarket=="10  Meter"
-replace dis_supermarket="10" if dis_supermarket=="10 Meter"
-replace dis_supermarket="10" if dis_supermarket=="10 Meter"
-replace dis_supermarket="10" if dis_supermarket=="10 Meter"
-replace dis_supermarket="10" if dis_supermarket=="10 Meter"
-replace dis_supermarket="10" if dis_supermarket=="10 Meter"
-replace dis_supermarket="12" if dis_supermarket=="12 Meter"
-replace dis_supermarket="15" if dis_supermarket=="15  Meter"
-replace dis_supermarket="15" if dis_supermarket=="15 Meter"
-replace dis_supermarket="15" if dis_supermarket=="15 Meter"
-replace dis_supermarket="20" if dis_supermarket=="20  Meter"
-replace dis_supermarket="20" if dis_supermarket=="20 Meter"
-replace dis_supermarket="30" if dis_supermarket=="30 Meter"
-replace dis_supermarket="30" if dis_supermarket=="30 Meter"
-replace dis_supermarket="50" if dis_supermarket=="50  Meter"
-replace dis_supermarket="50" if dis_supermarket=="50  Meter"
-replace dis_supermarket="50" if dis_supermarket=="50 Meter"
-replace dis_supermarket="50" if dis_supermarket=="50 Meter"
-replace dis_supermarket="70" if dis_supermarket=="70  Meter"
-replace dis_supermarket="80" if dis_supermarket=="80 Meter"
-replace dis_supermarket="100" if dis_supermarket=="100  Meter"
-replace dis_supermarket="100" if dis_supermarket=="100 Meter"
-replace dis_supermarket="200" if dis_supermarket=="200   Mete"
-replace dis_supermarket="200" if dis_supermarket=="200  Meter"
-replace dis_supermarket="200" if dis_supermarket=="200  Meter"
-replace dis_supermarket="200" if dis_supermarket=="200 Meter"
-replace dis_supermarket="300" if dis_supermarket=="300 Meter"
-replace dis_supermarket="300" if dis_supermarket=="300 Meter"
-replace dis_supermarket="300" if dis_supermarket=="300 Meter"
-replace dis_supermarket="500" if dis_supermarket=="500  Meter"
-replace dis_supermarket="500" if dis_supermarket=="500 Meter"
-replace dis_supermarket="500" if dis_supermarket=="500 Meter"
-
-*hypermarket
-replace dis_hypermarket="500" if dis_hypermarket=="0.5 KM"
-replace dis_hypermarket="500" if dis_hypermarket=="0.5 kM"
-replace dis_hypermarket="500" if dis_hypermarket=="0.5 KM"
-replace dis_hypermarket="500" if dis_hypermarket=="1/2 KM"
-replace dis_hypermarket="500" if dis_hypermarket=="1/2 KM"
-replace dis_hypermarket="500" if dis_hypermarket=="1/2 KM"
-replace dis_hypermarket="1000" if dis_hypermarket=="1 KM"
-replace dis_hypermarket="2000" if dis_hypermarket=="2  KM"
-replace dis_hypermarket="2000" if dis_hypermarket=="2 KM"
-replace dis_hypermarket="2000" if dis_hypermarket=="2 kM"
-replace dis_hypermarket="2000" if dis_hypermarket=="2 KM"
-replace dis_hypermarket="2000" if dis_hypermarket=="2 KM"
-replace dis_hypermarket="2000" if dis_hypermarket=="2 kM"
-replace dis_hypermarket="2000" if dis_hypermarket=="2 KM"
-replace dis_hypermarket="2500" if dis_hypermarket=="2.5KM"
-replace dis_hypermarket="3000" if dis_hypermarket=="3 KM"
-replace dis_hypermarket="3000" if dis_hypermarket=="3 KM"
-replace dis_hypermarket="3000" if dis_hypermarket=="3 KM"
-replace dis_hypermarket="4000" if dis_hypermarket=="4 KM"
-replace dis_hypermarket="4000" if dis_hypermarket=="4 km"
-replace dis_hypermarket="5000" if dis_hypermarket=="5  KM"
-replace dis_hypermarket="5000" if dis_hypermarket=="5 KM"
-replace dis_hypermarket="10000" if dis_hypermarket=="10  km"
-replace dis_hypermarket="10000" if dis_hypermarket=="10 KM"
-replace dis_hypermarket="10000" if dis_hypermarket=="10 KM"
-replace dis_hypermarket="10000" if dis_hypermarket=="10 KM"
-replace dis_hypermarket="12000" if dis_hypermarket=="12 KM"
-replace dis_hypermarket="15000" if dis_hypermarket=="15 KM"
-replace dis_hypermarket="15000" if dis_hypermarket=="15 KM."
-replace dis_hypermarket="20000" if dis_hypermarket=="20 KM"
-replace dis_hypermarket="20000" if dis_hypermarket=="20 KM"
-replace dis_hypermarket="30000" if dis_hypermarket=="30 KM"
-replace dis_hypermarket="30000" if dis_hypermarket=="30 KM"
-replace dis_hypermarket="50000" if dis_hypermarket=="50 KM"
-replace dis_hypermarket="0.5" if dis_hypermarket=="0.5 Meter"
-replace dis_hypermarket="1" if dis_hypermarket=="1   Meter"
-replace dis_hypermarket="1" if dis_hypermarket=="1   Meter"
-replace dis_hypermarket="1" if dis_hypermarket=="1  Meter"
-replace dis_hypermarket="1" if dis_hypermarket=="1 Meter"
-replace dis_hypermarket="2" if dis_hypermarket=="2  Meter"
-replace dis_hypermarket="2" if dis_hypermarket=="2  Meter"
-replace dis_hypermarket="2" if dis_hypermarket=="2 Meter"
-replace dis_hypermarket="2" if dis_hypermarket=="2 meter"
-replace dis_hypermarket="3" if dis_hypermarket=="3  Meter"
-replace dis_hypermarket="3" if dis_hypermarket=="3  Meter"
-replace dis_hypermarket="5" if dis_hypermarket=="5 M"
-replace dis_hypermarket="5" if dis_hypermarket=="5  Meter"
-replace dis_hypermarket="5" if dis_hypermarket=="5  Meter"
-replace dis_hypermarket="5" if dis_hypermarket=="5  Meter"
-replace dis_hypermarket="5" if dis_hypermarket=="5 Meter"
-replace dis_hypermarket="5" if dis_hypermarket=="5 Meter"
-replace dis_hypermarket="7" if dis_hypermarket=="7  Meter"
-replace dis_hypermarket="8" if dis_hypermarket=="8  Meter"
-replace dis_hypermarket="10" if dis_hypermarket=="10   Meter"
-replace dis_hypermarket="10" if dis_hypermarket=="10  Meter"
-replace dis_hypermarket="10" if dis_hypermarket=="10  Meter"
-replace dis_hypermarket="10" if dis_hypermarket=="10 Meter"
-replace dis_hypermarket="10" if dis_hypermarket=="10 Meter"
-replace dis_hypermarket="10" if dis_hypermarket=="10 Meter"
-replace dis_hypermarket="10" if dis_hypermarket=="10 Meter"
-replace dis_hypermarket="10" if dis_hypermarket=="10 Meter"
-replace dis_hypermarket="12" if dis_hypermarket=="12 Meter"
-replace dis_hypermarket="15" if dis_hypermarket=="15  Meter"
-replace dis_hypermarket="15" if dis_hypermarket=="15 Meter"
-replace dis_hypermarket="15" if dis_hypermarket=="15 Meter"
-replace dis_hypermarket="20" if dis_hypermarket=="20  Meter"
-replace dis_hypermarket="20" if dis_hypermarket=="20 Meter"
-replace dis_hypermarket="30" if dis_hypermarket=="30 Meter"
-replace dis_hypermarket="30" if dis_hypermarket=="30 Meter"
-replace dis_hypermarket="50" if dis_hypermarket=="50  Meter"
-replace dis_hypermarket="50" if dis_hypermarket=="50  Meter"
-replace dis_hypermarket="50" if dis_hypermarket=="50 Meter"
-replace dis_hypermarket="50" if dis_hypermarket=="50 Meter"
-replace dis_hypermarket="70" if dis_hypermarket=="70  Meter"
-replace dis_hypermarket="80" if dis_hypermarket=="80 Meter"
-replace dis_hypermarket="100" if dis_hypermarket=="100  Meter"
-replace dis_hypermarket="100" if dis_hypermarket=="100 Meter"
-replace dis_hypermarket="200" if dis_hypermarket=="200   Mete"
-replace dis_hypermarket="200" if dis_hypermarket=="200  Meter"
-replace dis_hypermarket="200" if dis_hypermarket=="200  Meter"
-replace dis_hypermarket="200" if dis_hypermarket=="200 Meter"
-replace dis_hypermarket="300" if dis_hypermarket=="300 Meter"
-replace dis_hypermarket="300" if dis_hypermarket=="300 Meter"
-replace dis_hypermarket="300" if dis_hypermarket=="300 Meter"
-replace dis_hypermarket="500" if dis_hypermarket=="500  Meter"
-replace dis_hypermarket="500" if dis_hypermarket=="500 Meter"
-replace dis_hypermarket="500" if dis_hypermarket=="500 Meter"
-
-*other stores
-replace dis_others="500" if dis_others=="0.5 KM"
-replace dis_others="500" if dis_others=="0.5 kM"
-replace dis_others="500" if dis_others=="0.5 KM"
-replace dis_others="500" if dis_others=="1/2 KM"
-replace dis_others="500" if dis_others=="1/2 KM"
-replace dis_others="500" if dis_others=="1/2 KM"
-replace dis_others="1000" if dis_others=="1 KM"
-replace dis_others="2000" if dis_others=="2  KM"
-replace dis_others="2000" if dis_others=="2 KM"
-replace dis_others="2000" if dis_others=="2 kM"
-replace dis_others="2000" if dis_others=="2 KM"
-replace dis_others="2000" if dis_others=="2 KM"
-replace dis_others="2000" if dis_others=="2 kM"
-replace dis_others="2000" if dis_others=="2 KM"
-replace dis_others="2500" if dis_others=="2.5KM"
-replace dis_others="3000" if dis_others=="3 KM"
-replace dis_others="3000" if dis_others=="3 KM"
-replace dis_others="3000" if dis_others=="3 KM"
-replace dis_others="4000" if dis_others=="4 KM"
-replace dis_others="4000" if dis_others=="4 km"
-replace dis_others="5000" if dis_others=="5  KM"
-replace dis_others="5000" if dis_others=="5 KM"
-replace dis_others="10000" if dis_others=="10  km"
-replace dis_others="10000" if dis_others=="10 KM"
-replace dis_others="10000" if dis_others=="10 KM"
-replace dis_others="10000" if dis_others=="10 KM"
-replace dis_others="12000" if dis_others=="12 KM"
-replace dis_others="15000" if dis_others=="15 KM"
-replace dis_others="15000" if dis_others=="15 KM."
-replace dis_others="20000" if dis_others=="20 KM"
-replace dis_others="20000" if dis_others=="20 KM"
-replace dis_others="30000" if dis_others=="30 KM"
-replace dis_others="30000" if dis_others=="30 KM"
-replace dis_others="50000" if dis_others=="50 KM"
-replace dis_others="0.5" if dis_others=="0.5 Meter"
-replace dis_others="1" if dis_others=="1   Meter"
-replace dis_others="1" if dis_others=="1   Meter"
-replace dis_others="1" if dis_others=="1  Meter"
-replace dis_others="1" if dis_others=="1 Meter"
-replace dis_others="2" if dis_others=="2  Meter"
-replace dis_others="2" if dis_others=="2  Meter"
-replace dis_others="2" if dis_others=="2 Meter"
-replace dis_others="2" if dis_others=="2 meter"
-replace dis_others="3" if dis_others=="3  Meter"
-replace dis_others="3" if dis_others=="3  Meter"
-replace dis_others="5" if dis_others=="5 M"
-replace dis_others="5" if dis_others=="5  Meter"
-replace dis_others="5" if dis_others=="5  Meter"
-replace dis_others="5" if dis_others=="5  Meter"
-replace dis_others="5" if dis_others=="5 Meter"
-replace dis_others="5" if dis_others=="5 Meter"
-replace dis_others="7" if dis_others=="7  Meter"
-replace dis_others="8" if dis_others=="8  Meter"
-replace dis_others="10" if dis_others=="10   Meter"
-replace dis_others="10" if dis_others=="10  Meter"
-replace dis_others="10" if dis_others=="10  Meter"
-replace dis_others="10" if dis_others=="10 Meter"
-replace dis_others="10" if dis_others=="10 Meter"
-replace dis_others="10" if dis_others=="10 Meter"
-replace dis_others="10" if dis_others=="10 Meter"
-replace dis_others="10" if dis_others=="10 Meter"
-replace dis_others="12" if dis_others=="12 Meter"
-replace dis_others="15" if dis_others=="15  Meter"
-replace dis_others="15" if dis_others=="15 Meter"
-replace dis_others="15" if dis_others=="15 Meter"
-replace dis_others="20" if dis_others=="20  Meter"
-replace dis_others="20" if dis_others=="20 Meter"
-replace dis_others="30" if dis_others=="30 Meter"
-replace dis_others="30" if dis_others=="30 Meter"
-replace dis_others="50" if dis_others=="50  Meter"
-replace dis_others="50" if dis_others=="50  Meter"
-replace dis_others="50" if dis_others=="50 Meter"
-replace dis_others="50" if dis_others=="50 Meter"
-replace dis_others="70" if dis_others=="70  Meter"
-replace dis_others="80" if dis_others=="80 Meter"
-replace dis_others="100" if dis_others=="100  Meter"
-replace dis_others="100" if dis_others=="100 Meter"
-replace dis_others="200" if dis_others=="200   Mete"
-replace dis_others="200" if dis_others=="200  Meter"
-replace dis_others="200" if dis_others=="200  Meter"
-replace dis_others="200" if dis_others=="200 Meter"
-replace dis_others="300" if dis_others=="300 Meter"
-replace dis_others="300" if dis_others=="300 Meter"
-replace dis_others="300" if dis_others=="300 Meter"
-replace dis_others="500" if dis_others=="500  Meter"
-replace dis_others="500" if dis_others=="500 Meter"
-replace dis_others="500" if dis_others=="500 Meter"
-
-
-destring  dis_wkmarket dis_grocery dis_supermarket dis_hypermarket dis_others, replace
-gen       dis_wkmarketkm= dis_wkmarket/1000
-gen       dis_grocerykm= dis_grocery/1000
-gen       dis_supermarketkm= dis_supermarket/1000
-gen       dis_hypermarketkm= dis_hypermarket/1000
-gen       dis_otherskm= dis_others/1000
-
-summarize dis_wkmarketkm dis_grocerykm dis_supermarketkm dis_hypermarketkm dis_otherskm
-summarize dis_wkmarketkm dis_grocerykm dis_supermarketkm dis_hypermarketkm dis_otherskm, detail
-
-/*generate dummy with S3Q2b and S3Q2c, get the max distance
-this is not recommended as the data shows that there are discrepancies in consumer survey and with 
-variables generated to check validity of data responses*/
 
 ********************importance of health and nutri benefits********************
 
@@ -1426,12 +842,9 @@ label variable actual_2daybudget "adjusted weekly budget for two days from consu
 label variable act_2daypercapbudget "adjusted weekly per capita budget for two days from consumer survey 2018"
 label variable giv_2daypercapbudget "received weeklypercapitabudget for two days (rescaled to account inflation)"
 
-*label variable actual_wkbudget "actual weekly budget recorded from consumer survey 2018"
-*label variable given_wkbudget "received weekly budget (rescaled to account inflation)"
-
-label variable PBC "Predicted budget constraint"
+label variable PBC "Predicted per capita budget constraint"
 label variable PSBC "Predicted status of being budget-constrained"
-label variable PBC_00 "Predicted budget constraint (in '00 INR)"
+label variable PBC_00 "Predicted per capita budget constraint (in '00 INR)"
 
 label variable tue2 "Second day - Tuesday"
 label variable wed2 "Second day - Wednesday"
@@ -1507,31 +920,12 @@ label variable incpercap "monthly household per capita income from consumer surv
 label variable income000 "monthly household income from consumer survey 2018 (INR '000)"
 label variable incpercap000 "monthly household per capita income from consumer survey 2018('000 INR)"
 
-label variable wkmarket "household purchase food products in a weekly market"
-label variable grocery "household purchase food products in a local grocery"
-label variable supermarket "household purchase food products in a supermarket"
-label variable hypermarket "household purchase food products in a hypermarket"
-label variable online "household purchase food products in online stores"
-label variable otherstore "household purchase food products in a other stores"
-
-label variable wkmarket_veg "vegetable product is purchased at weekly market"
-label variable wkmarket_fruit "fruit product is purchased at weekly market"
-label variable wkmarket_rice "rice product is purchased at weekly market"
-label variable grocery_rice "rice product is purchased at local grocery"
-
-label variable store_modern "buy products in modern stores"
-label variable store_modernonly "buy products only in modern stores"
-label variable store_tradonly "buy products in only in traditional stores"
-
 label variable freq_riceconv "frequency of purchasing rice (days in a month)"
 
-label variable dis_wkmarketkm "distance from house to store (in km)-wet market"
-label variable dis_grocerykm "distance from house to store (in km)-grocery"
-label variable dis_supermarketkm "distance from house to store (in km)-supermarket"
-label variable dis_hypermarketkm "distance from house to store (in km)-hypermarket"
-label variable dis_otherskm "distance from house to store (in km)-others"
-
 label variable importance_healthnutri "Health and nutri benefits are very/extremely important"
+
+label variable wkbudgetpercap00 "Weekly per capita food budget from Consumer survey 2018 ('00 INR)"
+
 
 **********
 label values BCC1 BCC2 BCC3 mon2 tue2 wed2 thu2 fri2 sat2 sun2 weekdays weekends weekends_both ///
@@ -1539,9 +933,7 @@ label values BCC1 BCC2 BCC3 mon2 tue2 wed2 thu2 fri2 sat2 sun2 weekdays weekends
 			 youngadult_h youngadult_w hungry_h hungry_w wchild wteens wadult wseniors ///
 			 inv_allh inv_allw train_one train_both source_hTV source_hTVrad ///
 			 source_hwom source_hretail source_hlabel source_wTV source_wTVrad source_wwom source_wretail source_wlabel ///
-			 north wkmarket grocery supermarket hypermarket online otherstore ///
-			 wkmarket_veg wkmarket_fruit wkmarket_rice grocery_rice ///
-			 store_modern store_modernonly store_tradonly importance_healthnutri farmer yes
+			 north importance_healthnutri farmer yes
 			 
 label values highschool_h highschool_w agriocc_h employed_w T1 T2 T3 yesno
 label values PSBC cons
@@ -1595,11 +987,14 @@ rename hunger hunger_indiv
 merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta"
 drop _merge
 
-label variable hunger_indiv "individualized hunger levels"
+label variable hunger_indiv "self-reported hunger level"
 
 edit uniqueID hunger_h hunger_w hungry_h hungry_w hunger_ave hunger_ratio hunger_indiv
 
 save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta", replace
+
+*====================================================
+
 
 
 

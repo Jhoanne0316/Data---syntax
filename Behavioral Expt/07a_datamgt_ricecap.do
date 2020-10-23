@@ -27,13 +27,14 @@ collapse (mean) ricepercap, by (uniqueID)
 label    variable ricepercap "ave daily rice consumption per capita (in grams)"
 
 
-*natural logarithm transformation (ln); log transformation (log)*
+*data transformation: log transformation (log), square-root transformation for moderate skew:*
 
 gen      logricepercap=log(ricepercap)
+gen      sqrtricepercap=sqrt(ricepercap)
 
 label    variable ricepercap    "ave daily rice consumption per capita (in grams)"
 label    variable logricepercap "ave daily rice consumption per capita (in grams, log)"
-
+label    variable sqrtricepercap "ave daily rice consumption per capita (in grams, sqrt)"
 
 merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta"
 drop _merge
@@ -43,6 +44,9 @@ twoway kdensity ricepercap if round ==1 || kdensity ricepercap if round ==2 ||kd
                 legend(order(1 "husband" 2 "wife" 3 "consensus"))
 				
 twoway kdensity logricepercap if round ==1 || kdensity logricepercap if round ==2 ||kdensity logricepercap if round ==3, ///
+                legend(order(1 "husband" 2 "wife" 3 "consensus"))
+				
+twoway kdensity sqrtricepercap if round ==1 || kdensity sqrtricepercap if round ==2 ||kdensity sqrtricepercap if round ==3, ///
                 legend(order(1 "husband" 2 "wife" 3 "consensus"))
 				
 				

@@ -2,7 +2,21 @@
 
 clear all
 
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\collapsed_budgetshares\00masterfile_budgetshares.dta", clear
+use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_mergefile.dta", clear
+
+
+/************** DATA MANAGEMENT FOR INDEPENDENT VARIABLES******************/
+keep     uniqueID session hh round day occasion dish quantity ///
+         cost hhsize 
+
+sort     uniqueID day occasion
+
+/**generating the deflated budget as the basis for total budget received by the ///
+   household, rescaled to account inflation*/
+gen      double defdishcost     =round(cost/2.85031581297067,0.0001) 
+
+**investment shares is based on this variable
+gen      double amtspentperdish =round(quantity*defdishcost,0.0001) 
 
 /************** DATA MANAGEMENT FOR INDEPENDENT VARIABLES******************/
 
@@ -10,7 +24,6 @@ keep    uniqueID session hh round day dish amtspentperdish hhsize
 
 sort    uniqueID day dish
 
-edit 
 
 *computing the total amount spent for a unique dish in one day
 collapse (sum) amtspentperdish (mean) hhsize round, by (uniqueID day dish)
@@ -185,11 +198,11 @@ drop dish
 reshape wide amtspentperdish, i(uniqueID) j (dish_code)
 
 **adding uniqueID for each hh using iresid var
-merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000_econ_models.dta"
+merge 1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000a_models.dta"
 
 keep uniqueID- amtspentperdish158 hhsize round session hh
 
-merge 1:1 session hh round using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\dfc_iresid.dta"
+merge 1:1 session hh round using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\00a_iresid.dta"
 drop _merge uniqueID hhsize session hh
 
 *replacing the value of the variable round in preparation for reshaping the data creating dish variable for each round
@@ -201,10 +214,7 @@ replace round=103 if round==3
 *restructuring the data to household level
 reshape wide amtspentperdish1- amtspentperdish158, i(iresid) j (round)
 
-*replaceing zero values to those dish variable with no amount spent
-foreach v of varlist amtspentperdish1101-amtspentperdish158103 {
-    replace `v' =0 if `v'==.
-  }
+
 
 **computing distance for husband
 gen double hdis_1  =  (amtspentperdish1101-amtspentperdish1103)^2
@@ -489,37 +499,17 @@ reshape long hdis_ wdis_, i(iresid) j (dish)
 gen  double midmp_dishspent=round((wed/(hed+wed)),0.0001)
 gen  double widmp_dishspent=round((hed/(hed+wed)),0.0001)
 
-/*label variable logallricepercap1 "ave amount of steamed rice per capita per day(log)(husband)"
-label variable logallricepercap2 "ave amount of steamed rice per capita per day(log)(wife)"
-label variable logallricepercap3 "ave amount of steamed rice per capita per day(log)(joint)"
-*/
+merge   1:m iresid using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta"
+drop    _merge hdis_ wdis_
 
-label variable hdis_ "Sum of the distances (husband)"
-label variable wdis_ "Sum of the distances (wife)"
+sort    iresid
+drop    if round!=1
 
 label variable hed "Euclidean distance for husband"
 label variable wed "Euclidean distance for wife"
 
-label variable midmp_dishspent "Men’s intrahousehold decision making power using amount spent per dish"
-label variable widmp_dishspent "Women’s intrahousehold decision making power using amount spent per dish"
+label variable midmp_dishspent "Men’s intrahousehold decision making power (amount spent per dish)"
+label variable widmp_dishspent "Women’s intrahousehold decision making power using (amount spent per dish)"
 
-summarize
-twoway kdensity midmp_dishspent || kdensity widmp_dishspent
-
-		
-save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\17analysis_ihdmpdishspent.dta", replace
+save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\12analysis_idmpdishspent.dta", replace
 ****
-
-clear all
-
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta", clear
-edit uniqueID session hh round iresid hunger_ratio hunger_h hunger_w
-drop if round<3
-
-
-merge 1:1 iresid using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\17analysis_ihdmpdishspent.dta"
-drop _merge
-
-****	
-save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\17analysis_ihdmpdishspent.dta", replace
-
