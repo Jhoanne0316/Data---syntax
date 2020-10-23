@@ -75,9 +75,8 @@ reshape  wide kcal, i(uniqueID) j (occ)
 foreach  v of varlist kcal1- kcal5{
          replace `v' =0 if `v'==.
           }
-		    
 
-		  
+	  
 /***need to compute the average daily share of energy per occasion*/
 
 
