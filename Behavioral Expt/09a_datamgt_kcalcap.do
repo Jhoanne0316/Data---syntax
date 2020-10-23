@@ -33,7 +33,6 @@ natural logarithm transformation (ln); log transformation (log)== same results
 this is done to transform the data to normal distribution
 */
 
-gen      lnkcalcap =ln(kcalcap)
 gen      logkcalcap=log(kcalcap)
 
 **labelling variables
