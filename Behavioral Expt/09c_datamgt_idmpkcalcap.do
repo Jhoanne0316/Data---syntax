@@ -22,7 +22,7 @@ drop    if round!=1
 keep iresid kcalcap1 kcalcap2 kcalcap3  ///
          weekends_both Morning       Kolkata                           ///
 		 T1            T2            T3                                ///
-	     PBC_00        hunger_ratio                                    ///
+	     PBC_00        hunger_ratio  hunger_h       hunger_w           ///
 		 highschool_h  highschool_w  agriocc_h    employed_w           ///
 		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
 		 source_hlabel source_wlabel hhsize       wchild     wseniors
@@ -43,6 +43,7 @@ label variable wed "Euclidean distance for wife"
 label variable midmp_kcalcap "Men’s intrahousehold decision making power (kcal/cap)"
 label variable widmp_kcalcap "Women’s intrahousehold decision making power (kcal/cap)"
 
+drop kcalcap1 kcalcap2 kcalcap3
 
 save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\09analysis_idmpkcalcap.dta", replace
 

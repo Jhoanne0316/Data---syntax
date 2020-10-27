@@ -18,7 +18,7 @@ drop    if round!=1
 keep     iresid starch1 - savings3                                     ///
          weekends_both Morning       Kolkata                           ///
 		 T1            T2            T3                                ///
-	     PBC_00        hunger_ratio                                    ///
+	     PBC_00        hunger_ratio  hunger_h hunger_w                 ///
 		 highschool_h  highschool_w  agriocc_h    employed_w           ///
 		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
 		 source_hlabel source_wlabel hhsize       wchild     wseniors
@@ -56,6 +56,7 @@ label    variable wed        "Euclidean distance for wife(foodexp)"
 label    variable midmp_fexp "Men’s intrahousehold decision making power(foodexp)"
 label    variable widmp_fexp "Women’s intrahousehold decision making power(foodexp)"
 
+drop     starch1- savings3
 
 save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\06analysis_idmpfoodexp.dta", replace
 
