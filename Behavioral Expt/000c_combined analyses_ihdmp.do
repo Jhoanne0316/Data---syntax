@@ -3,119 +3,263 @@
 ***************************************
 clear all
 
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\09analysis_ihdmpkcal.dta", clear
+use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\06analysis_idmpfoodexp.dta", clear
 
-merge 1:1 iresid using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\08analysis_ihdmpfoodexp.dta"
+merge 1:1 iresid using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\07analysis_idmpricecap.dta"
 drop _merge
 
-merge 1:1 iresid using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\12analysis_ihdmpHDDS.dta"
+merge 1:1 iresid using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\08analysis_idmphdds.dta"
 drop _merge
 
-merge 1:1 iresid using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\13analysis_ihdmpkcalcap.dta"
+merge 1:1 iresid using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\09analysis_idmpkcalcap.dta"
 drop _merge
 
-merge 1:1 iresid using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\14analysis_ihdmpricecap.dta"
+merge 1:1 iresid using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\10analysis_idmpmacronutri.dta"
+drop _merge
+
+merge 1:1 iresid using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\12analysis_idmpdishspent.dta"
 drop _merge
 
 
-save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000_ihdmp_models.dta", replace
+save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000b_idmpmodels.dta", replace
+
+describe widmp_dishspent  weekends_both Morning Kolkata                 ///
+		 T1            T2            T3                                ///
+	     PBC_00        hunger_ratio  hunger_h       hunger_w           ///
+		 highschool_h  highschool_w  agriocc_h    employed_w           ///
+		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		 source_hlabel source_wlabel hhsize       wchild     wseniors
+		 
+
+summarize widmp_dishspent  weekends_both Morning Kolkata                 ///
+		 T1            T2            T3                                ///
+	     PBC_00        hunger_ratio  hunger_h       hunger_w           ///
+		 highschool_h  highschool_w  agriocc_h    employed_w           ///
+		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		 source_hlabel source_wlabel hhsize       wchild     wseniors
+		 
+
 
 /*VIF*/
 
-collin weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w agriocc_h employed_w ///
-	 inv_allw  ref incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, corr
+collin weekends_both Morning Kolkata                 ///
+		 T1            T2            T3                                ///
+	     PBC_00        hunger_h       hunger_w                         ///
+		 highschool_h  highschool_w  agriocc_h    employed_w           ///
+		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		 source_hlabel source_wlabel hhsize       wchild     wseniors, corr
 
+collin weekends_both Morning Kolkata                 ///
+		 T1            T2            T3                                ///
+	     PBC_00        hunger_ratio                          ///
+		 highschool_h  highschool_w  agriocc_h    employed_w           ///
+		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		 source_hlabel source_wlabel hhsize       wchild     wseniors, corr
+********************************
+* WIDMP MODELS - hunger level  *
+********************************
 
-*********
-* ECON MODELS
-*********
 clear all
 
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000_ihdmp_models.dta", clear
+use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000b_idmpmodels.dta", clear
 
 *************
 
 * allocated for WIDMP
 
 *************
-*Food Expenditure
-fracreg probit widmp_fexp weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger_h hunger_w husband0 wife0 ///
-	 highschool_h highschool_w agriocc_h employed_w ///
-	 inv_allw  ref  incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, ///
-	  vce (cluster iresid)
-
+*06Food Expenditure
+fracreg probit widmp_fexp weekends_both Morning Kolkata               ///
+		 T1            T2            T3                                ///
+	     PBC_00        hunger_h       hunger_w                         ///
+		 highschool_h  highschool_w  agriocc_h    employed_w           ///
+		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		 source_hlabel source_wlabel hhsize       wchild     wseniors, vce (cluster iresid)
+	 
 margins, dyex(_all)
-
+margins, dyex(_all) coeflegend post
 eststo foodexp
 
 *************
 
-* allocated for Rice per capita
-fracreg probit widmp_ricecap weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger_h hunger_w husband0 wife0 ///
-	 highschool_h highschool_w agriocc_h employed_w ///
-	 inv_allw  ref  incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, ///
+*07Rice per capita
+fracreg probit widmp_ricepercap weekends_both Morning Kolkata                 ///
+		 T1            T2            T3                                ///
+	     PBC_00        hunger_h       hunger_w                                    ///
+		 highschool_h  highschool_w  agriocc_h    employed_w           ///
+		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		 source_hlabel source_wlabel hhsize       wchild     wseniors, ///
 	  vce (cluster iresid)
 	 
 margins, dyex(_all)
-
+margins, dyex(_all) coeflegend post
 	  
 eststo rice
 
 *************
-*HDDS
-regress HDDS weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w agriocc_h employed_w ///
-	 inv_allw  ref  incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, ///
-	  vce (cluster iresid) 
+*08HDDS
+fracreg probit widmp_hdds weekends_both Morning Kolkata                 ///
+		 T1            T2            T3                                ///
+	     PBC_00        hunger_h       hunger_w                         ///
+		 highschool_h  highschool_w  agriocc_h    employed_w           ///
+		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		 source_hlabel source_wlabel hhsize       wchild     wseniors, ///
+	  vce (cluster iresid)
+	 
+margins, dyex(_all)
+margins, dyex(_all) coeflegend post
 	  
 eststo HDDS
 
 *************
-*calories per capita
-regress logkcalpercap weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w agriocc_h employed_w ///
-	 inv_allw  ref  incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors, ///
-	  vce (cluster iresid) 
-
+*09calories per capita
+fracreg probit widmp_kcalcap weekends_both Morning Kolkata                 ///
+		 T1            T2            T3                                ///
+	     PBC_00        hunger_h       hunger_w                         ///
+		 highschool_h  highschool_w  agriocc_h    employed_w           ///
+		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		 source_hlabel source_wlabel hhsize       wchild     wseniors, ///
+	  vce (cluster iresid)
+	 
+margins, dyex(_all)
+margins, dyex(_all) coeflegend post
 eststo Calpercap
 
 *************
-*Calorie distribution
-fmlogit  protein carb fat, ///
-	  eta(weekends_both Morning Kolkata ///
-     BCC1 BCC2 BCC3 PBC_00 hunger husband0 wife0 ///
-	 highschool_h highschool_w agriocc_h employed_w ///
-	 inv_allw  ref  incpercap000  ///
-	 source_hlabel source_wlabel hhsize wchild wseniors) cluster(iresid)
-		
+*10Calorie distribution
+fracreg probit widmp_macronutri  weekends_both Morning Kolkata                 ///
+		 T1            T2            T3                                ///
+	     PBC_00        hunger_h       hunger_w                         ///
+		 highschool_h  highschool_w  agriocc_h    employed_w           ///
+		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		 source_hlabel source_wlabel hhsize       wchild     wseniors, ///
+	  vce (cluster iresid)
+	 
+margins, dyex(_all)
+margins, dyex(_all) coeflegend post
 eststo caldist
 
-foreach o in   carb  protein fat{
-margins, dydx(*) predict(outcome(`o')) post
-eststo, title(`o')
-estimates restore caldist
-}
-eststo drop caldist
 
 *************
 
-* allocated for Calorie distribution among occasionsCalorie distribution among occasions
+*12dish spent
+
+fracreg probit widmp_dishspent weekends_both Morning Kolkata                 ///
+		 T1            T2            T3                                ///
+	     PBC_00        hunger_h       hunger_w                         ///
+		 highschool_h  highschool_w  agriocc_h    employed_w           ///
+		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		 source_hlabel source_wlabel hhsize       wchild     wseniors, ///
+	  vce (cluster iresid)
+	 
+margins, dyex(_all)
+margins, dyex(_all) coeflegend post
+eststo dishspent
 
 *************
 
+esttab using C:\Users\jynion\Desktop\DFC_widmpame.rtf, mtitles title(Econometric results of the nudging experiment)label star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) pr2(3) onecell nogaps
 
-/*esttab caldist calcap diet using C:\Users\jynion\Desktop\DFC_v1.rtf , title (Econometric results of the nudging experiment) mtitles ("Parameter estimate") label star(* 0.10 ** 0.05 *** 0.01) b(4) se(4) pr2(4) onecell nogaps unstack*/
-esttab using C:\Users\jynion\Desktop\DFC_results.rtf, mtitles title(Econometric results of the nudging experiment)label star(* 0.10 ** 0.05 *** 0.01) b(4) se(4) pr2(4) onecell nogaps
 
+
+********************************
+* WIDMP MODELS - hunger ratio  *
+********************************
+
+clear all
+
+use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000b_idmpmodels.dta", clear
+
+*************
+*06Food Expenditure
+fracreg probit widmp_fexp weekends_both Morning Kolkata               ///
+		 T1            T2            T3                                ///
+	     PBC_00        hunger_ratio                                    ///
+		 highschool_h  highschool_w  agriocc_h    employed_w           ///
+		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		 source_hlabel source_wlabel hhsize       wchild     wseniors, vce (cluster iresid)
+	 
+margins, dyex(_all)
+margins, dyex(_all) coeflegend post
+eststo foodexp
+
+*************
+
+*07Rice per capita
+fracreg probit widmp_ricepercap weekends_both Morning Kolkata                 ///
+		 T1            T2            T3                                ///
+	     PBC_00        hunger_ratio                                    ///
+		 highschool_h  highschool_w  agriocc_h    employed_w           ///
+		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		 source_hlabel source_wlabel hhsize       wchild     wseniors, ///
+	  vce (cluster iresid)
+	 
+margins, dyex(_all)
+margins, dyex(_all) coeflegend post
+	  
+eststo rice
+
+*************
+*08HDDS
+fracreg probit widmp_hdds weekends_both Morning Kolkata                 ///
+		 T1            T2            T3                                ///
+	     PBC_00        hunger_ratio                                    ///
+		 highschool_h  highschool_w  agriocc_h    employed_w           ///
+		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		 source_hlabel source_wlabel hhsize       wchild     wseniors, ///
+	  vce (cluster iresid)
+	 
+margins, dyex(_all)
+margins, dyex(_all) coeflegend post
+	  
+eststo HDDS
+
+*************
+*09calories per capita
+fracreg probit widmp_kcalcap weekends_both Morning Kolkata                 ///
+		 T1            T2            T3                                ///
+	     PBC_00        hunger_ratio                                    ///
+		 highschool_h  highschool_w  agriocc_h    employed_w           ///
+		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		 source_hlabel source_wlabel hhsize       wchild     wseniors, ///
+	  vce (cluster iresid)
+	 
+margins, dyex(_all)
+margins, dyex(_all) coeflegend post
+eststo Calpercap
+
+*************
+*10Calorie distribution
+fracreg probit widmp_macronutri  weekends_both Morning Kolkata                 ///
+		 T1            T2            T3                                ///
+	     PBC_00        hunger_ratio                                    ///
+		 highschool_h  highschool_w  agriocc_h    employed_w           ///
+		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		 source_hlabel source_wlabel hhsize       wchild     wseniors, ///
+	  vce (cluster iresid)
+	 
+margins, dyex(_all)
+margins, dyex(_all) coeflegend post
+eststo caldist
+
+
+*************
+
+*12dish spent
+
+fracreg probit widmp_dishspent weekends_both Morning Kolkata                 ///
+		 T1            T2            T3                                ///
+	     PBC_00        hunger_ratio                                    ///
+		 highschool_h  highschool_w  agriocc_h    employed_w           ///
+		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		 source_hlabel source_wlabel hhsize       wchild     wseniors, ///
+	  vce (cluster iresid)
+	 
+margins, dyex(_all)
+margins, dyex(_all) coeflegend post
+eststo dishspent
+
+*************
+
+esttab using C:\Users\jynion\Desktop\DFC_widmpame1.rtf, mtitles title(Econometric results of the nudging experiment)label star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) pr2(3) onecell nogaps
 
