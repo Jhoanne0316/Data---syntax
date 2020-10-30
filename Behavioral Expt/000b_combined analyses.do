@@ -72,6 +72,9 @@ regress ricepercap    ///
 	  
 eststo ricecap
 
+esttab using C:\Users\jynion\Desktop\ricecap.rtf, mtitles title(Econometric results of the nudging experiment)label star(* 0.10 ** 0.05 *** 0.01 ****0.000526316) b(3) se(3) pr2(3) onecell nogaps
+
+
 *************
 *08b_analysis_hdds
 regress HDDS              ///
