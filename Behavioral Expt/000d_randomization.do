@@ -30,31 +30,41 @@ by treatment: summarize     defbudget         PBC_00        weekends_both Mornin
 *  regression
 **************************
 sort Kolkata
-regress defbudget    ///
-		weekends_both Morning       north                               ///
-		T1            T2            T3                                    ///
-		hunger_h      hunger_w                            ///
-		highschool_h  highschool_w  agriocc_h      employed_w                  ///
-		inv_allw      ref           incpercap000   wkbudgetpercap00      ///
-		source_hlabel source_wlabel hhsize         wchild     wseniors if Kolkata==1
+regress defbudget     weekends_both                                      ///
+		T1            T2               T3                                    ///
+		hunger_h      hunger_w         highschool_h  highschool_w      ///
+		agriocc_h     employed_w       inv_allw      ref            ///
+		incpercap000  wkbudgetpercap00 source_hlabel source_wlabel    ///
+		hhsize        wchild           wseniors      if Kolkata==1
 		
 eststo defbudget1
 
-regress defbudget    ///
-		weekends_both Morning       north                               ///
+regress defbudget     weekends_both    north                                  ///
+		T1            T2               T3                                    ///
+		hunger_h      hunger_w         highschool_h  highschool_w      ///
+		agriocc_h     employed_w       inv_allw      ref            ///
+		incpercap000  wkbudgetpercap00 source_hlabel source_wlabel    ///
+		hhsize        wchild           wseniors      if Kolkata==0
+		
+eststo defbudget2
+	
+esttab using C:\Users\jynion\Desktop\000c_randomv1.62.rtf, mtitles title(Randomization)label star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) pr2(3) onecell nogaps
+
+
+	  
+collin weekends_both                                       ///
 		T1            T2            T3                                    ///
 		hunger_h      hunger_w                            ///
 		highschool_h  highschool_w  agriocc_h      employed_w                  ///
 		inv_allw      ref           incpercap000   wkbudgetpercap00      ///
-		source_hlabel source_wlabel hhsize         wchild     wseniors if Kolkata==0
+		source_hlabel source_wlabel hhsize         wchild     wseniors if Kolkata==1, corr
 		
-eststo defbudget2
-	
-esttab using C:\Users\jynion\Desktop\000c_random.rtf, mtitles title(Randomization)label star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) pr2(3) onecell nogaps
-
-
-			  
-
+/*https://www.stata.com/statalist/archive/2012-12/msg00849.html
+If all the values of x are the same, then x is collinear with the
+constant in the regression line.  A regression line summarizes the
+relation between change in y and change in x.   If x is constant, the
+data provide no information on change in x.
+*/
 **************************
 clear all
 
