@@ -27,7 +27,7 @@ by treatment: summarize     defbudget         PBC_00        weekends_both Mornin
 			  
   
 **************************
-*  regression
+*  regression by Kolkata
 **************************
 sort Kolkata
 regress defbudget     weekends_both                                      ///
@@ -50,14 +50,29 @@ eststo defbudget2
 	
 esttab using C:\Users\jynion\Desktop\000c_randomv1.62.rtf, mtitles title(Randomization)label star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) pr2(3) onecell nogaps
 
+ 
+**************************
+*  regression
+**************************
+ 
+regress defbudget     Morning          weekends_both   Kolkata north                                   ///
+		T1            T2               T3                                    ///
+		hunger_h      hunger_w         highschool_h  highschool_w      ///
+		agriocc_h     employed_w       inv_allw      ref            ///
+		incpercap000  wkbudgetpercap00 source_hlabel source_wlabel    ///
+		hhsize        wchild           wseniors
+	
+eststo defbudget
+	
+esttab using C:\Users\jynion\Desktop\000c_randomv1.8.rtf, mtitles title(Randomization)label star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) pr2(3) onecell nogaps
 
 	  
-collin weekends_both                                       ///
-		T1            T2            T3                                    ///
-		hunger_h      hunger_w                            ///
-		highschool_h  highschool_w  agriocc_h      employed_w                  ///
-		inv_allw      ref           incpercap000   wkbudgetpercap00      ///
-		source_hlabel source_wlabel hhsize         wchild     wseniors if Kolkata==1, corr
+collin Morning          weekends_both   Kolkata north                                   ///
+		T1            T2               T3                                    ///
+		hunger_h      hunger_w         highschool_h  highschool_w      ///
+		agriocc_h     employed_w       inv_allw      ref            ///
+		incpercap000  wkbudgetpercap00 source_hlabel source_wlabel    ///
+		hhsize        wchild           wseniors, corr
 		
 /*https://www.stata.com/statalist/archive/2012-12/msg00849.html
 If all the values of x are the same, then x is collinear with the
