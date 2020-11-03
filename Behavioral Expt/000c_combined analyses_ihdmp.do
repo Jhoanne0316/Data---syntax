@@ -98,7 +98,7 @@ eststo rice
 
 *************
 *08HDDS
-fracreg probit widmp_hdds weekends_both Morning Kolkata                 ///
+fracreg probit widmp_hdds weekends_both Morning Kolkata   north              ///
 		 T1            T2            T3                                ///
 	     PBC_00        hunger_h       hunger_w                         ///
 		 highschool_h  highschool_w  agriocc_h    employed_w           ///
@@ -158,7 +158,7 @@ eststo dishspent
 
 *************
 
-esttab using C:\Users\jynion\Desktop\DFC_widmpame.rtf, mtitles title(Econometric results of the nudging experiment)label star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) pr2(3) onecell nogaps
+esttab using C:\Users\jynion\Desktop\DFC_widmpame_hdds.rtf, mtitles title(Econometric results of the nudging experiment)label star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) pr2(3) onecell nogaps
 
 
 
@@ -169,6 +169,14 @@ esttab using C:\Users\jynion\Desktop\DFC_widmpame.rtf, mtitles title(Econometric
 clear all
 
 use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000b_idmpmodels.dta", clear
+
+collin weekends_both Morning       Kolkata      north                     ///
+		  T1            T2            T3                                ///
+	      PBC_00        hunger_indiv  husband0     wife0                ///
+		  highschool_h  highschool_w  agriocc_h    employed_w           ///
+		  inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		  source_hlabel source_wlabel hhsize       wchild     wsenior, corr
+		  
 
 *************
 *06Food Expenditure
