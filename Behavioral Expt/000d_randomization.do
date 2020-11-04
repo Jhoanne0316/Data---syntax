@@ -48,7 +48,7 @@ regress defbudget     weekends_both    north                                  //
 		
 eststo defbudget2
 	
-esttab using C:\Users\jynion\Desktop\000c_randomv1.62.rtf, mtitles title(Randomization)label star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) pr2(3) onecell nogaps
+esttab using C:\Users\jynion\Desktop\000c_randomv1.62.rtf, mtitles title(Randomization)label star(* 0.05 ** 0.01 *** 0.001) b(3) se(3) pr2(3) onecell nogaps
 
  
 **************************
@@ -64,7 +64,7 @@ regress defbudget     Morning          weekends_both   Kolkata north            
 	
 eststo defbudget
 	
-esttab using C:\Users\jynion\Desktop\000c_randomv1.8.rtf, mtitles title(Randomization)label star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) pr2(3) onecell nogaps
+esttab using C:\Users\jynion\Desktop\000c_randomv1.3.rtf, mtitles title(Randomization)label star(* 0.05 ** 0.01 *** 0.001) b(3) se(3) pr2(3) onecell nogaps
 
 	  
 collin Morning          weekends_both   Kolkata north                                   ///
