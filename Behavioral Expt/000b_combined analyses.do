@@ -141,6 +141,6 @@ eststo drop kcalocc
 
 
 /*esttab caldist calcap diet using C:\Users\jynion\Desktop\DFC_v2.rtf , title (Econometric results of the nudging experiment) mtitles ("Parameter estimate") label star(* 0.10 ** 0.05 *** 0.01) b(4) se(4) pr2(4) onecell nogaps unstack*/
-esttab using C:\Users\jynion\Desktop\000a_modelsame_v2.rtf, mtitles title(Econometric results of the nudging experiment)label star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) pr2(3) onecell nogaps
+esttab using C:\Users\jynion\Desktop\000a_modelsame_v1.3.rtf, mtitles title(Econometric results of the nudging experiment)label star(* 0.05 ** 0.01 *** 0.001) b(3) se(3) pr2(3) onecell nogaps
 
 
