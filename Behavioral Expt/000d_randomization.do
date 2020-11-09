@@ -24,47 +24,72 @@ by treatment: summarize     defbudget         PBC_00        weekends_both Mornin
 		      agriocc_h     employed_w        inv_allw      ref           ///
 		      incpercap000  wkbudgetpercap00  source_hlabel source_wlabel ///
 			  hhsize        wchild            wseniors
-			  
-  
-**************************
-*  regression by Kolkata
-**************************
+
 sort Kolkata
-regress defbudget     weekends_both                                      ///
-		T1            T2               T3                                    ///
-		hunger_h      hunger_w         highschool_h  highschool_w      ///
-		agriocc_h     employed_w       inv_allw      ref            ///
-		incpercap000  wkbudgetpercap00 source_hlabel source_wlabel    ///
-		hhsize        wchild           wseniors      if Kolkata==1
-		
-eststo defbudget1
+by Kolkata: summarize defbudget 
 
-regress defbudget     weekends_both    north                                  ///
-		T1            T2               T3                                    ///
-		hunger_h      hunger_w         highschool_h  highschool_w      ///
-		agriocc_h     employed_w       inv_allw      ref            ///
-		incpercap000  wkbudgetpercap00 source_hlabel source_wlabel    ///
-		hhsize        wchild           wseniors      if Kolkata==0
-		
-eststo defbudget2
-	
-esttab using C:\Users\jynion\Desktop\000c_randomv1.62.rtf, mtitles title(Randomization)label star(* 0.05 ** 0.01 *** 0.001) b(3) se(3) pr2(3) onecell nogaps
+/*
+Generate “Normalized random weekly per capita food budget” 
+  = (Random weekly per capita food budget)/(sample mean of random weekly per capita food budget).
 
- 
+  .	summarize defbudget
+
+	Variable	Obs	Mean	Std. Dev.	Min	Max
+						
+	defbudget	177	101.315	46.65838	34.3822	239.2717
+
+*/
+
+gen     defbudget_norm=defbudget/75.75012 if Kolkata==0
+replace defbudget_norm=defbudget/136.0832 if Kolkata==1
+
 **************************
 *  regression
 **************************
- 
-regress defbudget     Morning          weekends_both   Kolkata north                                   ///
+
+/*
+Conduct joint test of orthogonality on linear regression 
+“Normalized random weekly per capita food budget = f(explanatory variables).”
+*/
+
+regress defbudget_norm     Morning          weekends_both   Kolkata north                                   ///
 		T1            T2               T3                                    ///
 		hunger_h      hunger_w         highschool_h  highschool_w      ///
 		agriocc_h     employed_w       inv_allw      ref            ///
 		incpercap000  wkbudgetpercap00 source_hlabel source_wlabel    ///
 		hhsize        wchild           wseniors
 	
-eststo defbudget
-	
-esttab using C:\Users\jynion\Desktop\000c_randomv1.3.rtf, mtitles title(Randomization)label star(* 0.05 ** 0.01 *** 0.001) b(3) se(3) pr2(3) onecell nogaps
+eststo defbudget_norm
+
+test Morning          weekends_both   Kolkata north                                   ///
+		T1            T2               T3                                    ///
+		hunger_h      hunger_w         highschool_h  highschool_w      ///
+		agriocc_h     employed_w       inv_allw      ref            ///
+		incpercap000  wkbudgetpercap00 source_hlabel source_wlabel    ///
+		hhsize        wchild           wseniors
+/*
+Conduct joint test of orthogonality on multinomial regression 
+“(control, T1, T2 and T3) = f(explanatory variables).” 
+*/
+
+mlogit treatment     Morning          weekends_both   Kolkata        ///
+       north         PBC_00                                          ///
+	   hunger_h      hunger_w         highschool_h    highschool_w   ///
+	   agriocc_h     employed_w       inv_allw        ref            ///
+	   incpercap000  wkbudgetpercap00 source_hlabel   source_wlabel  ///
+	   hhsize        wchild           wseniors, base(4)
+
+
+eststo defbudget_mlogit
+
+test Morning          weekends_both   Kolkata        ///
+       north         PBC_00                                          ///
+	   hunger_h      hunger_w         highschool_h    highschool_w   ///
+	   agriocc_h     employed_w       inv_allw        ref            ///
+	   incpercap000  wkbudgetpercap00 source_hlabel   source_wlabel  ///
+	   hhsize        wchild           wseniors
+
+esttab using C:\Users\jynion\Desktop\000c_randomv1.8.rtf, mtitles title(Randomization)label star(* 0.05 ** 0.01 *** 0.001) b(3) se(3) pr2(3) onecell nogaps
 
 	  
 collin Morning          weekends_both   Kolkata north                                   ///
@@ -74,6 +99,8 @@ collin Morning          weekends_both   Kolkata north                           
 		incpercap000  wkbudgetpercap00 source_hlabel source_wlabel    ///
 		hhsize        wchild           wseniors, corr
 		
+		
+	
 /*https://www.stata.com/statalist/archive/2012-12/msg00849.html
 If all the values of x are the same, then x is collinear with the
 constant in the regression line.  A regression line summarizes the
