@@ -55,6 +55,7 @@ collin weekends_both Morning Kolkata                 ///
 		 highschool_h  highschool_w  agriocc_h    employed_w           ///
 		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
 		 source_hlabel source_wlabel hhsize       wchild     wseniors, corr
+
 ********************************
 * WIDMP MODELS - hunger level  *
 ********************************
@@ -98,7 +99,7 @@ eststo rice
 
 *************
 *08HDDS
-fracreg probit widmp_hdds weekends_both Morning Kolkata                 ///
+fracreg probit widmp_hdds weekends_both Morning Kolkata   north              ///
 		 T1            T2            T3                                ///
 	     PBC_00        hunger_h       hunger_w                         ///
 		 highschool_h  highschool_w  agriocc_h    employed_w           ///
@@ -158,108 +159,5 @@ eststo dishspent
 
 *************
 
-esttab using C:\Users\jynion\Desktop\DFC_widmpame.rtf, mtitles title(Econometric results of the nudging experiment)label star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) pr2(3) onecell nogaps
-
-
-
-********************************
-* WIDMP MODELS - hunger ratio  *
-********************************
-
-clear all
-
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000b_idmpmodels.dta", clear
-
-*************
-*06Food Expenditure
-fracreg probit widmp_fexp weekends_both Morning Kolkata               ///
-		 T1            T2            T3                                ///
-	     PBC_00        hunger_ratio                                    ///
-		 highschool_h  highschool_w  agriocc_h    employed_w           ///
-		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
-		 source_hlabel source_wlabel hhsize       wchild     wseniors, vce (cluster iresid)
-	 
-margins, dyex(_all)
-margins, dyex(_all) coeflegend post
-eststo foodexp
-
-*************
-
-*07Rice per capita
-fracreg probit widmp_ricepercap weekends_both Morning Kolkata                 ///
-		 T1            T2            T3                                ///
-	     PBC_00        hunger_ratio                                    ///
-		 highschool_h  highschool_w  agriocc_h    employed_w           ///
-		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
-		 source_hlabel source_wlabel hhsize       wchild     wseniors, ///
-	  vce (cluster iresid)
-	 
-margins, dyex(_all)
-margins, dyex(_all) coeflegend post
-	  
-eststo rice
-
-*************
-*08HDDS
-fracreg probit widmp_hdds weekends_both Morning Kolkata                 ///
-		 T1            T2            T3                                ///
-	     PBC_00        hunger_ratio                                    ///
-		 highschool_h  highschool_w  agriocc_h    employed_w           ///
-		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
-		 source_hlabel source_wlabel hhsize       wchild     wseniors, ///
-	  vce (cluster iresid)
-	 
-margins, dyex(_all)
-margins, dyex(_all) coeflegend post
-	  
-eststo HDDS
-
-*************
-*09calories per capita
-fracreg probit widmp_kcalcap weekends_both Morning Kolkata                 ///
-		 T1            T2            T3                                ///
-	     PBC_00        hunger_ratio                                    ///
-		 highschool_h  highschool_w  agriocc_h    employed_w           ///
-		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
-		 source_hlabel source_wlabel hhsize       wchild     wseniors, ///
-	  vce (cluster iresid)
-	 
-margins, dyex(_all)
-margins, dyex(_all) coeflegend post
-eststo Calpercap
-
-*************
-*10Calorie distribution
-fracreg probit widmp_macronutri  weekends_both Morning Kolkata                 ///
-		 T1            T2            T3                                ///
-	     PBC_00        hunger_ratio                                    ///
-		 highschool_h  highschool_w  agriocc_h    employed_w           ///
-		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
-		 source_hlabel source_wlabel hhsize       wchild     wseniors, ///
-	  vce (cluster iresid)
-	 
-margins, dyex(_all)
-margins, dyex(_all) coeflegend post
-eststo caldist
-
-
-*************
-
-*12dish spent
-
-fracreg probit widmp_dishspent weekends_both Morning Kolkata                 ///
-		 T1            T2            T3                                ///
-	     PBC_00        hunger_ratio                                    ///
-		 highschool_h  highschool_w  agriocc_h    employed_w           ///
-		 inv_allw      ref           incpercap000 wkbudgetpercap00     ///
-		 source_hlabel source_wlabel hhsize       wchild     wseniors, ///
-	  vce (cluster iresid)
-	 
-margins, dyex(_all)
-margins, dyex(_all) coeflegend post
-eststo dishspent
-
-*************
-
-esttab using C:\Users\jynion\Desktop\DFC_widmpame1.rtf, mtitles title(Econometric results of the nudging experiment)label star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) pr2(3) onecell nogaps
+esttab using C:\Users\jynion\Desktop\DFC_widmpame_v1.3.rtf, mtitles title(Econometric results of the nudging experiment)label star(* 0.05 ** 0.01 *** 0.001) b(3) se(3) pr2(3) onecell nogaps
 

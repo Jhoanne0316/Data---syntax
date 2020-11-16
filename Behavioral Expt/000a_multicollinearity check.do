@@ -32,13 +32,12 @@ by round:summarize weekends_both Morning Kolkata ///
 
 **use all
 
-collin   weekends_both Morning Kolkata ///
-		 T1 T2 T3 PBC_00 ///
-		 hunger_indiv  /// *hunger ratio is only included for IDMP models
-		 husband0 wife0 /// *not included for IDMP models
-		 highschool_h highschool_w agriocc_h employed_w ///
-		 inv_allw  ref incpercap000 wkbudgetpercap00 ///
-		 source_hlabel source_wlabel hhsize wchild wseniors , corr
+collin   weekends_both Morning       Kolkata      north                     ///
+		  T1            T2            T3                                ///
+	      PBC_00        hunger_indiv  husband0     wife0                ///
+		  highschool_h  highschool_w  agriocc_h    employed_w           ///
+		  inv_allw      ref           incpercap000 wkbudgetpercap00     ///
+		  source_hlabel source_wlabel hhsize       wchild     wseniors , corr
 		 
 **removing incpercap000
 collin   weekends_both Morning Kolkata ///
