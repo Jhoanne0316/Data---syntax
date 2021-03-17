@@ -27,21 +27,42 @@ drop _merge
 
 save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000a_models.dta", replace
 
-*********
-* ECON MODELS
-*********
+***************************
+*          ANALYSIS       *  
+***************************
 clear all
 
 use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\000a_models.dta", clear
 
-*************
 
-* allocated for WIDMP
+***************************
+*   ANALYSIS: DESC STAT  *  
+***************************
 
+
+gen kcalcap000=kcalcap/1000
+sort treatment
+by treatment: summarize starch nonveg pulses dairy veg fruit savings ///
+                        ricepercap HDDS kcalcap000 carb protein fat ///
+						s1_bfast s2_amsnacks s3_lunch s4_pmsnacks s5_dinner
+  
+sort round
+by round: summarize starch nonveg pulses dairy veg fruit savings ///
+                        ricepercap HDDS kcalcap000 carb protein fat ///
+						s1_bfast s2_amsnacks s3_lunch s4_pmsnacks s5_dinner
+
+summarize starch nonveg pulses dairy veg fruit savings ///
+          ricepercap HDDS kcalcap000 carb protein fat ///
+  		  s1_bfast s2_amsnacks s3_lunch s4_pmsnacks s5_dinner
+		  
+		  
+***************************
+*  ANALYSIS: ECON MODELS  *  
+***************************
 *************
 *06b_analysis_foodexp
 fmlogit savings starch nonveg pulses dairy veg fruit ,                  ///
-	  eta(weekends_both Morning       Kolkata                           ///
+	  eta(weekends_both Morning       Kolkata      north                     ///
 		  T1            T2            T3                                ///
 	      PBC_00        hunger_indiv  husband0     wife0                ///
 		  highschool_h  highschool_w  agriocc_h    employed_w           ///
@@ -62,7 +83,7 @@ eststo drop foodexp
 
 * 07b_analysis_ricecap
 regress ricepercap    ///
-		weekends_both Morning       Kolkata                               ///
+		weekends_both Morning       Kolkata   north                       ///
 		T1            T2            T3                                    ///
 		PBC_00        hunger_indiv  husband0  wife0                       ///
 		highschool_h  highschool_w  agriocc_h employed_w                  ///
@@ -72,13 +93,11 @@ regress ricepercap    ///
 	  
 eststo ricecap
 
-esttab using C:\Users\jynion\Desktop\ricecap.rtf, mtitles title(Econometric results of the nudging experiment)label star(* 0.10 ** 0.05 *** 0.01 ****0.000526316) b(3) se(3) pr2(3) onecell nogaps
-
 
 *************
 *08b_analysis_hdds
 regress HDDS              ///
-		weekends_both Morning       Kolkata                               ///
+		weekends_both Morning       Kolkata   north                       ///
 		T1            T2            T3                                    ///
 		PBC_00        hunger_indiv  husband0  wife0                       ///
 		highschool_h  highschool_w  agriocc_h employed_w                  ///
@@ -93,7 +112,7 @@ eststo hdds
 
 
 regress kcalcap                               ///
-		weekends_both Morning       Kolkata                               ///
+		weekends_both Morning       Kolkata   north                       ///
 		T1            T2            T3                                    ///
 		PBC_00        hunger_indiv  husband0  wife0                       ///
 		highschool_h  highschool_w  agriocc_h employed_w                  ///
@@ -106,7 +125,7 @@ eststo kcalcap
 *************
 *10b_analysis_macronutri
 fmlogit protein carb fat , ///
-	  eta(weekends_both Morning       Kolkata                           ///
+	  eta(weekends_both Morning       Kolkata      north                ///
 		  T1            T2            T3                                ///
 	      PBC_00        hunger_indiv  husband0     wife0                ///
 		  highschool_h  highschool_w  agriocc_h    employed_w           ///
@@ -127,7 +146,7 @@ eststo drop macronutri
 *************
 * 11b_analysis_kcalocc
 fmlogit   s5_dinner     s1_bfast      s2_amsnacks   s3_lunch   s4_pmsnacks, ///
-	  eta(weekends_both Morning       Kolkata                           ///
+	  eta(weekends_both Morning       Kolkata      north                ///
 		  T1            T2            T3                                ///
 	      PBC_00        hunger_indiv  husband0     wife0                ///
 		  highschool_h  highschool_w  agriocc_h    employed_w           ///
@@ -146,7 +165,7 @@ eststo drop kcalocc
 *************
 
 
-/*esttab caldist calcap diet using C:\Users\jynion\Desktop\DFC_v1.rtf , title (Econometric results of the nudging experiment) mtitles ("Parameter estimate") label star(* 0.10 ** 0.05 *** 0.01) b(4) se(4) pr2(4) onecell nogaps unstack*/
-esttab using C:\Users\jynion\Desktop\000a_modelsame.rtf, mtitles title(Econometric results of the nudging experiment)label star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) pr2(3) onecell nogaps
+/*esttab caldist calcap diet using C:\Users\jynion\Desktop\DFC_v2.rtf , title (Econometric results of the nudging experiment) mtitles ("Parameter estimate") label star(* 0.10 ** 0.05 *** 0.01) b(4) se(4) pr2(4) onecell nogaps unstack*/
+esttab using C:\Users\jynion\Desktop\000a_modelsame_v1.3.rtf, mtitles title(Econometric results of the nudging experiment)label star(* 0.05 ** 0.01 *** 0.001) b(3) se(3) pr2(3) onecell nogaps
 
 
