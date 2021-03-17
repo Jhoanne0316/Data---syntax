@@ -46,5 +46,12 @@ label variable widmp_hdds "Women’s intrahousehold decision making power (HDDS)
 
 drop HDDS1 HDDS2 HDDS3
 
+gen treatment=0
+replace treatment=1 if T1==1
+replace treatment=2 if T2==1
+replace treatment=3 if T3==1
+
+tab treatment
+
 save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\08analysis_idmphdds.dta", replace
 
