@@ -40,8 +40,6 @@ by        rnd:ttest HDDS=6
 merge     1:1 uniqueID using "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\05dfc_masterfile.dta"
 drop      _merge ses hh2 rnd
 
-twoway    kdensity HDDS if round ==1 || kdensity HDDS if round ==2 ||kdensity HDDS if round ==3, ///
-                legend(order(1 "husband" 2 "wife" 3 "consensus"))
 
 save "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\08analysis_hdds.dta", replace
 
