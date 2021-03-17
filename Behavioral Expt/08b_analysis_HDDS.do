@@ -2,7 +2,7 @@
 
 clear all
 
-use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\08analysis_hdds.dta", clear
+use "E:\Google Drive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\08analysis_hdds.dta", clear
 
 **variable description
 describe  HDDS  ///
@@ -23,6 +23,22 @@ by   round: summarize HDDS  ///
 					  inv_allw      ref           incpercap000    wkbudgetpercap00                      ///
 					  source_hlabel source_wlabel hhsize    wchild     wseniors
 					  
+
+twoway kdensity HDDS if round ==1, kernel(gaussian) || kdensity HDDS if round ==2, kernel(gaussian)||kdensity HDDS ///
+        if round ==3,kernel(gaussian) legend(order(1 "Husband" 2 "Wife" 3 "Consensus")) ///
+		xtitle("Household Dietary Diversity Score") 
+
+/*
+A density plot is a representation of the distribution of a numeric variable. 
+It uses a kernel density estimate to show the probability density function 
+of the variable (see more). It is a smoothed version of the histogram 
+and is used in the same concept.
+
+
+*/
+		
+		
+		
 ******************************************************************************************
 *                           START OF ANALYSIS
 ******************************************************************************************
@@ -30,6 +46,8 @@ by   round: summarize HDDS  ///
 clear all
 
 use "D:\GoogleDrive\jy_mrt_files\MRT - DFC (2017-2018)\Data analysis\DFC - data\merged files\08analysis_hdds.dta", clear
+
+
 
 regress HDDS              ///
 		weekends_both Morning       Kolkata                               ///
